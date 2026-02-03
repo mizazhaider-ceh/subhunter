@@ -16,7 +16,10 @@ def generate_html_report(
     probe_results: List[Dict],
     port_results: List[Dict] = None,
     screenshot_results: List[Dict] = None,
-    output_path: str = None
+    output_path: str = None,
+    takeover_results: List[Dict] = None,
+    vhost_results: List[Dict] = None,
+    js_results: Dict = None
 ) -> str:
     """Generate a premium HTML report with all discovered details."""
     
@@ -588,7 +591,120 @@ def generate_html_report(
         </div>
 """
     
-    # Dead subdomains section
+
+    # Takeover Section
+    if takeover_results:
+        verified_count = len([t for t in takeover_results if t.get('verified')])
+        
+        takeover_html = ""
+        for t in takeover_results:
+            status_badge = '<div class="badge" style="background: rgba(255, 82, 82, 0.2); color: #ff5252; font-weight: bold;">EXPLOSIVE</div>' if t.get('verified') else '<div class="badge" style="background: rgba(255, 193, 7, 0.2); color: #ffc107;">POTENTIAL</div>'
+            
+            takeover_html += f'''
+            <tr>
+                <td>{t['subdomain']}</td>
+                <td>{t['cname']}</td>
+                <td><span class="badge tech-badge">{t['service']}</span></td>
+                <td>{status_badge}</td>
+                <td>{', '.join(t['fingerprints'])}</td>
+            </tr>
+            '''
+            
+        html += f"""
+        <div class="section" style="border-color: #ff5252;">
+            <h2 style="color: #ff5252;">🚀 Subdomain Takeover Candidates ({len(takeover_results)})</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subdomain</th>
+                            <th>CNAME</th>
+                            <th>Service</th>
+                            <th>Status</th>
+                            <th>Fingerprint Matched</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {takeover_html}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        """
+
+    # VHost Section
+    if vhost_results:
+        vhost_html = ""
+        for v in vhost_results:
+            vhost_html += f'''
+            <tr>
+                <td>{v['ip']}</td>
+                <td><span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">{v['vhost']}</span></td>
+                <td><span class="status status-{v['status']}">{v['status']}</span></td>
+                <td>{v['len']}</td>
+            </tr>
+            '''
+            
+        html += f"""
+        <div class="section">
+            <h2>🌐 Virtual Hosts Discovered ({len(vhost_results)})</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Virtual Host</th>
+                            <th>Status</th>
+                            <th>Length</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {vhost_html}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        """
+
+    # JS Analysis Section
+    if js_results:
+        # Secrets
+        secrets_html = ""
+        if js_results.get('secrets'):
+            secrets_html = '<div class="mini-card" style="border-color: #ff5252;"><h3>🔑 Potential Secrets</h3><div class="list">'
+            for s in js_results['secrets']:
+                secrets_html += f'<div class="list-item"><span style="color: #ff5252; font-family: monospace;">{s}</span></div>'
+            secrets_html += '</div></div>'
+            
+        # Endpoints
+        endpoints_html = ""
+        if js_results.get('endpoints'):
+            endpoints_html = '<div class="mini-card"><h3>🔗 Discovered Endpoints (Top 50)</h3><div class="list">'
+            for e in list(js_results['endpoints'])[:50]:
+                endpoints_html += f'<div class="list-item"><span style="font-family: monospace; color: #a78bfa;">{e}</span></div>'
+            endpoints_html += '</div></div>'
+
+        # Subdomains
+        subs_html = ""
+        if js_results.get('subdomains'):
+            subs_html = '<div class="mini-card"><h3>📄 JS Subdomains</h3><div class="list">'
+            for s in list(js_results['subdomains'])[:20]:
+                subs_html += f'<div class="list-item"><span>{s}</span></div>'
+            subs_html += '</div></div>'
+
+        if secrets_html or endpoints_html or subs_html:
+            html += f"""
+            <div class="section">
+                <h2>📜 JavaScript Analysis</h2>
+                <div class="grid-3">
+                    {secrets_html}
+                    {endpoints_html}
+                    {subs_html}
+                </div>
+            </div>
+            """
+
+    # Dead subdomains section (Existing)
     if dead:
         html += f"""
         <div class="section">

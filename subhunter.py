@@ -65,6 +65,9 @@ from core.screenshot import take_all_screenshots, PLAYWRIGHT_AVAILABLE
 from core.report import generate_html_report
 from core.wildcard import detect_wildcard
 from core.cloud import detect_cloud_provider
+from core.takeover import check_takeover
+from core.vhost import discover_vhosts
+from core.jsparse import parse_js_files
 
 
 def get_report_path(domain: str, extension: str = "html") -> Path:
@@ -113,7 +116,10 @@ async def hunt(
     resume: bool = False,
     recursive: bool = False,
     recursive_depth: int = 2,
-    skip_wildcard_filter: bool = False
+    skip_wildcard_filter: bool = False,
+    takeover: bool = False,
+    vhost: bool = False,
+    js_parse: bool = False
 ):
     """Main hunting function with v4.0 pro features."""
     
@@ -260,6 +266,7 @@ async def hunt(
     # ─────────────────────────────────────────────────────────────────────────
     # Phase 5: Screenshots
     # ─────────────────────────────────────────────────────────────────────────
+    # Phase 5: Screenshots (Existing)
     screenshot_results = []
     if screenshots and probe_results:
         if not quiet:
@@ -270,6 +277,31 @@ async def hunt(
         
         if not quiet and screenshot_results:
             print(f"\n  {Colors.GREEN}Screenshots saved: {len(screenshot_results)}{Colors.RESET}")
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Phase 6: Subdomain Takeover (NEW v5.0)
+    # ─────────────────────────────────────────────────────────────────────────
+    takeover_results = []
+    if takeover and all_subdomains:
+        # We need A/CNAME info. If we ran brute, we might have it in dns_results.
+        # But specifically we need to check the CNAMEs of the *alive* or *discovered* subs.
+        # We'll pass the list of all subdomains to the checker.
+        takeover_results = await check_takeover(domain, list(all_subdomains), resolver, quiet)
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Phase 7: VHost Discovery (NEW v5.0)
+    # ─────────────────────────────────────────────────────────────────────────
+    vhost_results = []
+    if vhost and probe_results:
+        vhost_results = await discover_vhosts(domain, probe_results, quiet)
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Phase 8: JS Parsing (NEW v5.0)
+    # ─────────────────────────────────────────────────────────────────────────
+    js_results = {}
+    if js_parse and probe_results:
+        js_results = await parse_js_files(domain, probe_results, quiet)
+
     
     # ─────────────────────────────────────────────────────────────────────────
     # Save Results
@@ -278,13 +310,31 @@ async def hunt(
     # Auto-save HTML report to reports/ folder
     if probe_results:
         html_path = get_report_path(domain, "html")
-        generate_html_report(domain, probe_results, port_results, screenshot_results, str(html_path))
+        generate_html_report(
+            domain, 
+            probe_results, 
+            port_results, 
+            screenshot_results, 
+            str(html_path),
+            takeover_results=takeover_results if 'takeover_results' in locals() else [],
+            vhost_results=vhost_results if 'vhost_results' in locals() else [],
+            js_results=js_results if 'js_results' in locals() else {}
+        )
         if not quiet:
             print(f"\n{Colors.GREEN}[+] HTML report saved to: {html_path}{Colors.RESET}")
         
         # Also save to custom path if specified
         if html_report:
-            generate_html_report(domain, probe_results, port_results, screenshot_results, html_report)
+            generate_html_report(
+                domain, 
+                probe_results, 
+                port_results, 
+                screenshot_results, 
+                html_report,
+                takeover_results=takeover_results if 'takeover_results' in locals() else [],
+                vhost_results=vhost_results if 'vhost_results' in locals() else [],
+                js_results=js_results if 'js_results' in locals() else {}
+            )
             if not quiet:
                 print(f"{Colors.GREEN}[+] HTML report also saved to: {html_report}{Colors.RESET}")
     
@@ -368,53 +418,91 @@ Examples:
     parser.add_argument("-c", "--concurrency", type=int, default=100, help="Concurrency (default: 100)")
     parser.add_argument("-q", "--quiet", action="store_true", help="Quiet mode")
     
-    # v4.0 Pro Features
-    parser.add_argument("--recursive", action="store_true", 
-                       help="Enable recursive sub-subdomain discovery (e.g., dev.api.example.com)")
-    parser.add_argument("--recursive-depth", type=int, default=2, 
-                       help="Max recursion depth (default: 2)")
-    parser.add_argument("--no-wildcard-filter", action="store_true",
-                       help="Disable wildcard DNS detection and filtering")
-    
-    args = parser.parse_args()
-    
+    # v5.0 New Features
+    parser.add_argument("--takeover", action="store_true", 
+                       help="Check for subdomain takeover vulnerabilities")
+    parser.add_argument("--vhost", action="store_true", 
+                       help="Discover virtual hosts on same IP")
+    parser.add_argument("--js-parse", action="store_true", 
+                       help="Extract subdomains and secrets from JS files")
+    parser.add_argument("--interactive", action="store_true", 
+                       help="Force interactive mode")
+
+    # Check if no args provided -> Interactive Mode
+    if len(sys.argv) == 1:
+        from utils.menu import interactive_menu
+        try:
+            config = interactive_menu()
+            # Map config dict to namespace-like object or just use as kwargs
+            # Create a simple class to mimic argparse Namespace
+            class ConfigArgs:
+                def __init__(self, **entries):
+                    self.__dict__.update(entries)
+            
+            args = ConfigArgs(**config)
+            
+        except ImportError:
+            # Fallback if menu module fails
+            print(f"{Colors.YELLOW}[!] Interactive mode error. Use --help{Colors.RESET}")
+            sys.exit(1)
+    else:
+        args = parser.parse_args()
+        
+        # Helper to handle interactive flag if passed explicitly
+        if getattr(args, 'interactive', False):
+            from utils.menu import interactive_menu
+            config = interactive_menu()
+            class ConfigArgs:
+                def __init__(self, **entries):
+                    self.__dict__.update(entries)
+            args = ConfigArgs(**config)
+
     # Clean domain
     domain = args.domain.lower().strip()
     if domain.startswith(("http://", "https://")):
         domain = urlparse(domain).netloc
     domain = domain.rstrip("/")
     
-    if not args.quiet:
+    if not getattr(args, 'quiet', False):
         print_banner()
         print(f"{Colors.BOLD}Target:{Colors.RESET} {domain}")
         print(f"{Colors.DIM}Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}{Colors.RESET}")
         
-        # Show enabled pro features
+        # Show enabled features
         features = []
-        if not args.no_wildcard_filter:
+        if not getattr(args, 'no_wildcard_filter', False):
             features.append("🧠 Wildcard Detection")
-        if args.recursive:
-            features.append(f"🔄 Recursive (depth: {args.recursive_depth})")
+        if getattr(args, 'recursive', False):
+            features.append(f"🔄 Recursive (depth: {getattr(args, 'recursive_depth', 2)})")
         features.append("☁️ Cloud Detection")
         
-        print(f"{Colors.CYAN}Pro Features: {', '.join(features)}{Colors.RESET}")
+        # v5.0 Features
+        if getattr(args, 'takeover', False): features.append("🎯 Takeover Check")
+        if getattr(args, 'vhost', False): features.append("🌐 VHost Discovery")
+        if getattr(args, 'js_parse', False): features.append("📜 JS Parsing")
+        
+        print(f"{Colors.CYAN}Features: {', '.join(features)}{Colors.RESET}")
     
     try:
         asyncio.run(hunt(
             domain=domain,
-            wordlist_path=args.wordlist,
-            bruteforce=not args.no_brute,
-            probe=not args.no_probe,
-            port_scan=args.ports,
-            screenshots=args.screenshots,
-            output=args.output,
-            html_report=args.html,
-            concurrency=args.concurrency,
-            quiet=args.quiet,
-            resume=args.resume,
-            recursive=args.recursive,
-            recursive_depth=args.recursive_depth,
-            skip_wildcard_filter=args.no_wildcard_filter
+            wordlist_path=getattr(args, 'wordlist', None),
+            bruteforce=not getattr(args, 'no_brute', False),
+            probe=not getattr(args, 'no_probe', False),
+            port_scan=getattr(args, 'ports', False),
+            screenshots=getattr(args, 'screenshots', False),
+            output=getattr(args, 'output', None),
+            html_report=getattr(args, 'html', None),
+            concurrency=getattr(args, 'concurrency', 100),
+            quiet=getattr(args, 'quiet', False),
+            resume=getattr(args, 'resume', False),
+            recursive=getattr(args, 'recursive', False),
+            recursive_depth=getattr(args, 'recursive_depth', 2),
+            skip_wildcard_filter=getattr(args, 'no_wildcard_filter', False),
+            # New v5.0 kwargs
+            takeover=getattr(args, 'takeover', False),
+            vhost=getattr(args, 'vhost', False),
+            js_parse=getattr(args, 'js_parse', False)
         ))
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}[!] Interrupted - state saved for resume{Colors.RESET}")

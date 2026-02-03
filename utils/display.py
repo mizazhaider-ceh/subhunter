@@ -11,10 +11,11 @@ class Colors:
     MAGENTA = '\033[95m'
     BOLD = '\033[1m'
     DIM = '\033[2m'
+    BG_BLUE = '\033[44m'
     RESET = '\033[0m'
 
 
-VERSION = "4.0"
+VERSION = "5.0"
 
 
 def print_banner():
@@ -34,6 +35,6 @@ def print_banner():
     {Colors.GREEN}▓{Colors.RESET}                                                    {Colors.GREEN}▓{Colors.RESET}
     {Colors.GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓{Colors.RESET}
     
-    {Colors.DIM}[ 🧠 Wildcard • 🔄 Recursive • ☁️ Cloud • 📡 Probe • 🔐 Ports • 📸 Screenshots ]{Colors.RESET}
+    {Colors.DIM}[ 🧠 Wildcard • 🎯 Takeover • 🌐 VHost • 📜 JS Parse • ☁️ Cloud ]{Colors.RESET}
 """)
 

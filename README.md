@@ -1,64 +1,68 @@
 # SubHunter 🎯
-
-**Fast Subdomain Enumeration Tool v4.0 PRO**
-
-```
-╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
-╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v4.0 PRO
-```
-
-**Built By:** MIHx0 (Mizaz Haider)  
-**Powered By:** The PenTrix
-
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
----
-
-## ✨ What's New in v4.0 PRO
-
-| Feature | Description |
-|---------|-------------|
-| 🧠 **Wildcard Detection** | Automatically detect and filter wildcard DNS responses |
-| 🔄 **Recursive Mode** | Discover sub-subdomains (e.g., `dev.api.example.com`) |
-| ☁️ **Cloud Detection** | Identify AWS, Azure, GCP, Cloudflare, and 8 more cloud providers |
-| 🔐 **Port Scanning** | Scan 17 common ports on discovered subdomains |
-| 📸 **Screenshots** | Capture screenshots (Playwright or Selenium) |
-| 📊 **Pro Reports** | Beautiful HTML reports with cloud distribution charts |
-
----
-
-## 📁 Architecture
-
-```
-subhunter/
-├── subhunter.py          # CLI entry point
-├── sources/              # Passive enumeration
-│   └── passive.py        # 6 sources
-├── core/                 # Core functionality
-│   ├── dns.py           # DNS resolution, brute-force & recursive
-│   ├── probe.py         # HTTP probing, tech & cloud detection
-│   ├── scanner.py       # Port scanning
-│   ├── screenshot.py    # Screenshot capture
-│   ├── report.py        # HTML report generator
-│   ├── wildcard.py      # Wildcard DNS detection (v4.0)
-│   └── cloud.py         # Cloud provider detection (v4.0)
-├── utils/               # Utilities
-│   ├── display.py       # Colors & banner
-│   └── config.py        # Constants
-└── reports/             # Auto-saved reports
-```
-
----
-
-## Installation
-
-```bash
-git clone https://github.com/mizazhaider-ceh/subhunter.git
-cd subhunter
-pip install -r requirements.txt
-```
+ 
+ **Fast Subdomain Enumeration Tool v5.0**
+ 
+ ```
+ ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
+ ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
+ ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v5.0 PRO
+ ```
+ 
+ **Built By:** MIHx0 (Mizaz Haider)  
+ **Powered By:** The PenTrix
+ 
+ [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ 
+ ---
+ 
+ ## ✨ What's New in v5.0
+ 
+ | Feature | Description |
+ |---------|-------------|
+ | 🎮 **Interactive Mode** | Beautiful TUI menu when run without arguments |
+ | 🎯 **Takeover Check** | Detection for 20+ vulnerable cloud services (S3, Heroku, etc.) |
+ | 🌐 **VHost Discovery** | Find hidden virtual hosts on shared IPs |
+ | 📜 **JS Parsing** | Extract API endpoints and secrets from JavaScript files |
+ | 🧠 **Wildcard Detection** | Automatically detect and filter wildcard DNS responses |
+ | 🔄 **Recursive Mode** | Discover sub-subdomains (e.g., `dev.api.example.com`) |
+ | ☁️ **Cloud Detection** | Identify AWS, Azure, GCP, Cloudflare, and 8 more cloud providers |
+ | 📸 **Screenshots** | Capture screenshots (Playwright or Selenium) |
+ | 📊 **Pro Reports** | Enhanced HTML reports with new security findings |
+ 
+ ---
+ 
+ ## 📁 Architecture
+ 
+ ```
+ subhunter/
+ ├── subhunter.py          # Dual-Mode Entry (CLI/TUI)
+ ├── sources/              # Passive enumeration
+ │   └── passive.py        # 6 sources
+ ├── core/                 # Core functionality
+ │   ├── dns.py           # DNS resolution
+ │   ├── probe.py         # HTTP probing
+ │   ├── takeover.py      # Takeover detection (v5.0)
+ │   ├── vhost.py         # VHost discovery (v5.0)
+ │   ├── jsparse.py       # JS analysis (v5.0)
+ │   ├── report.py        # Report generator
+ │   └── ...              # Other core modules
+ ├── utils/               # Utilities
+ │   ├── menu.py          # Interactive TUI (v5.0)
+ │   ├── display.py       # Colors & banner
+ │   └── config.py        # Constants
+ └── reports/             # Auto-saved reports
+ ```
+ 
+ ---
+ 
+ ## Installation
+ 
+ ```bash
+ git clone https://github.com/mizazhaider-ceh/subhunter.git
+ cd subhunter
+ pip install -r requirements.txt
+ ```
 
 ### 📸 Screenshots Setup (Optional)
 
@@ -81,42 +85,46 @@ pip install selenium webdriver-manager
 ---
 
 ## Usage
-
-### Basic Scan
-```bash
-python subhunter.py -d example.com
-```
-
-### With Recursive Discovery (v4.0)
-```bash
-python subhunter.py -d example.com --recursive
-python subhunter.py -d example.com --recursive --recursive-depth 3
-```
-
-### With Port Scanning
-```bash
-python subhunter.py -d example.com --ports
-```
-
-### With Screenshots
-```bash
-python subhunter.py -d example.com --screenshots
-```
-
-### Full Pro Scan
-```bash
-python subhunter.py -d example.com --recursive --ports --screenshots
-```
-
-### Passive Only
-```bash
-python subhunter.py -d example.com --no-brute --no-probe
-```
-
-### Disable Wildcard Filter
-```bash
-python subhunter.py -d example.com --no-wildcard-filter
-```
+ 
+ ### 🎮 Interactive Mode (NEW)
+ Simply run without arguments:
+ ```bash
+ python subhunter.py
+ ```
+ 
+ ### Basic Scan
+ ```bash
+ python subhunter.py -d example.com
+ ```
+ 
+ ### With New Security Features (v5.0)
+ ```bash
+ # Check for takeovers
+ python subhunter.py -d example.com --takeover
+ 
+ # Thorough security audit
+ python subhunter.py -d example.com --takeover --vhost --js-parse
+ ```
+ 
+ ### With Recursive Discovery
+ ```bash
+ python subhunter.py -d example.com --recursive
+ ```
+ 
+ ### Full Pro Scan
+ ```bash
+ python subhunter.py -d example.com --recursive --takeover --vhost --js-parse --screenshots
+ ```
+ 
+ ### Passive Only
+ ```bash
+ python subhunter.py -d example.com --no-brute --no-probe
+ ```
+ 
+ ### Disable Wildcard Filter
+ ```bash
+ python subhunter.py -d example.com --no-wildcard-filter
+ ```
 
 ---
 
@@ -212,5 +220,16 @@ MIT License
 
 ---
 
-**SubHunter v4.0 PRO** - *Hunt them all* 🎯  
+**SubHunter v5.0 PRO** - *Hunt them all* 🎯  
 Built By: **MIHx0** (Mizaz Haider) | Powered By: **The PenTrix**
+
+---
+
+## 🔮 Roadmap (v6.0+)
+
+Coming soon in the next major release:
+
+- 🛡️ **WAF Detection** (Cloudflare, Akamai, etc.)
+- 📧 **Email Harvesting** (Extract contacts from pages)
+- 🧬 **Permutation Scanning** (Generate variants like `dev-api`, `v1-test`)
+- ...and more!
