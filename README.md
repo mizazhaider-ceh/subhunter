@@ -1,14 +1,11 @@
 # SubHunter 🎯
 
-**Fast Subdomain Enumeration Tool**
+**Fast Subdomain Enumeration Tool v2.0**
 
 ```
-███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███╗   ██╗████████╗███████╗██████╗ 
-██╔════╝██║   ██║██╔══██╗██║  ██║██║   ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗
-███████╗██║   ██║██████╔╝███████║██║   ██║██╔██╗ ██║   ██║   █████╗  ██████╔╝
-╚════██║██║   ██║██╔══██╗██╔══██║██║   ██║██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗
-███████║╚██████╔╝██████╔╝██║  ██║╚██████╔╝██║ ╚████║   ██║   ███████╗██║  ██║
-╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
+╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
+╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v2.0
 ```
 
 **Built By:** MIHx0 (Mizaz Haider)  
@@ -19,25 +16,22 @@
 
 ---
 
-## Features
+## ✨ What's New in v2.0
 
-- **Passive Enumeration** - Multiple sources (no detection)
-  - Certificate Transparency (crt.sh)
-  - HackerTarget API
-  - ThreatCrowd API
-  - urlscan.io
-  
-- **DNS Brute-forcing** - Built-in 100+ word list or custom
-- **Async Resolution** - 100+ concurrent DNS queries
-- **Multiple Output Formats** - TXT, JSON
-- **Single Script** - No complex setup
+| Feature | Description |
+|---------|-------------|
+| 🌐 **6 Passive Sources** | crt.sh, HackerTarget, AlienVault, urlscan.io, RapidDNS, WebArchive |
+| 🔍 **HTTP Probing** | Check which subdomains are alive with status codes |
+| 🏷️ **Tech Detection** | Detect 19+ technologies (WordPress, React, Nginx, AWS, etc.) |
+| 📊 **HTML Reports** | Beautiful, dark-themed reports with charts |
+| 📁 **Resume Scan** | Interrupt and resume scans anytime |
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/subhunter.git
+git clone https://github.com/mizazhaider-ceh/subhunter.git
 cd subhunter
 pip install -r requirements.txt
 ```
@@ -51,30 +45,34 @@ pip install -r requirements.txt
 python subhunter.py -d example.com
 ```
 
-### With Custom Wordlist
+### With HTTP Probing (Default in v2.0)
 ```bash
-python subhunter.py -d example.com -w wordlist.txt
+python subhunter.py -d example.com
 ```
 
-### Passive Only (No Brute-force)
+### Generate HTML Report
 ```bash
-python subhunter.py -d example.com --no-brute
+python subhunter.py -d example.com --html report.html
 ```
 
-### Save Results
+### Passive Only (No Brute-force, No Probing)
 ```bash
-python subhunter.py -d example.com -o results.txt
+python subhunter.py -d example.com --no-brute --no-probe
+```
+
+### Resume Interrupted Scan
+```bash
+python subhunter.py -d example.com --resume
+```
+
+### Save to JSON
+```bash
 python subhunter.py -d example.com -o results.json
 ```
 
-### Quiet Mode (Only Subdomains)
+### Custom Wordlist
 ```bash
-python subhunter.py -d example.com -q
-```
-
-### High Concurrency
-```bash
-python subhunter.py -d example.com -c 200
+python subhunter.py -d example.com -w /path/to/wordlist.txt
 ```
 
 ---
@@ -86,59 +84,92 @@ python subhunter.py -d example.com -c 200
 | `-d, --domain` | Target domain (required) |
 | `-w, --wordlist` | Custom wordlist file |
 | `-o, --output` | Output file (.txt or .json) |
+| `--html` | Generate HTML report |
 | `--no-brute` | Skip DNS brute-forcing |
-| `--no-resolve` | Skip DNS resolution |
+| `--no-probe` | Skip HTTP probing |
+| `--resume` | Resume previous scan |
 | `-c, --concurrency` | Concurrent queries (default: 100) |
-| `-q, --quiet` | Quiet mode - only output subdomains |
+| `-q, --quiet` | Quiet mode |
+
+---
+
+## 🌐 Passive Sources
+
+| Source | Type |
+|--------|------|
+| crt.sh | Certificate Transparency |
+| HackerTarget | DNS Records |
+| AlienVault OTX | Threat Intelligence |
+| urlscan.io | Web Scans |
+| RapidDNS | DNS Database |
+| WebArchive | Historical Data |
+
+---
+
+## 🏷️ Technologies Detected
+
+WordPress, Nginx, Apache, Cloudflare, AWS, Azure, React, Vue.js, Angular, Laravel, Django, Node.js, PHP, ASP.NET, jQuery, Bootstrap, Shopify, Wix, Squarespace
+
+---
+
+## 📊 HTML Report Preview
+
+The HTML report includes:
+- Total subdomains found
+- Alive vs dead count
+- Technology distribution chart
+- Status code breakdown
+- Sortable results table
+- Dark theme design
 
 ---
 
 ## Example Output
 
 ```
-╔═══════════════════════════════════════════════════════════════╗
-║ SubHunter - Fast Subdomain Enumeration              v1.0 ║
-╚═══════════════════════════════════════════════════════════════╝
+    ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
+    ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
+    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v2.0
 
-Target: example.com
+Target: hackerone.com
 Started: 2024-02-03 12:00:00
 
 [*] Phase 1: Passive Enumeration
-    Querying certificate transparency logs and APIs...
+    Querying 6 sources...
 
-  [+] crt.sh: 45 subdomains
-  [+] HackerTarget: 12 subdomains
-  [+] ThreatCrowd: 8 subdomains
-  [+] urlscan.io: 23 subdomains
+  [+] crt.sh: 156 subdomains
+  [+] HackerTarget: 23 subdomains
+  [+] AlienVault: 45 subdomains
+  [+] urlscan.io: 67 subdomains
+  [+] RapidDNS: 12 subdomains
+  [+] WebArchive: 89 subdomains
 
-  Total from passive: 67
+  Total from passive: 234
 
 [*] Phase 2: DNS Brute-forcing
-    Using built-in wordlist (100 words)
+    Using 75 words
 
-  [+] www.example.com → 93.184.216.34
-  [+] mail.example.com → 93.184.216.35
-  [+] api.example.com → 93.184.216.36
+  [+] api.hackerone.com → 104.16.99.52
+  [+] docs.hackerone.com → 104.16.100.52
 
-  Total from brute-force: 3
+  Total from brute-force: 15
+
+[*] Phase 3: HTTP Probing & Tech Detection
+    Probing 249 subdomains...
+
+  ● [200] https://www.hackerone.com [Cloudflare, React]
+  ● [200] https://api.hackerone.com [Nginx]
+  ● [301] https://docs.hackerone.com [Cloudflare]
+
+  Alive: 187 / 249
 
 ═════════════════════════════════════════════════════════════════
 SUMMARY
-  Domain: example.com
-  Total Subdomains: 70
+  Domain: hackerone.com
+  Total Subdomains: 249
+  Alive (HTTP): 187
 ═════════════════════════════════════════════════════════════════
 ```
-
----
-
-## Data Sources
-
-| Source | Type | Rate Limit |
-|--------|------|------------|
-| crt.sh | Certificate Transparency | None |
-| HackerTarget | DNS Records | 100/day (free) |
-| ThreatCrowd | Threat Intelligence | None |
-| urlscan.io | Web Scans | None |
 
 ---
 
@@ -154,7 +185,7 @@ SUMMARY
 
 ⚠️ **For authorized testing only.**
 
-This tool is designed for security professionals with proper authorization. Always ensure you have permission before scanning any domain.
+This tool is intended for security professionals with proper authorization. Always ensure you have permission before scanning any domain.
 
 ---
 
@@ -164,4 +195,5 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**SubHunter v1.0** - *Hunt them all* 🎯
+**SubHunter v2.0** - *Hunt them all* 🎯  
+Built By: **MIHx0** (Mizaz Haider) | Powered By: **The PenTrix**
