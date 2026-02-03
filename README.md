@@ -1,11 +1,11 @@
 # SubHunter 🎯
 
-**Fast Subdomain Enumeration Tool v2.0**
+**Fast Subdomain Enumeration Tool v3.0**
 
 ```
 ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
 ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v2.0
+╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v3.0
 ```
 
 **Built By:** MIHx0 (Mizaz Haider)  
@@ -16,15 +16,34 @@
 
 ---
 
-## ✨ What's New in v2.0
+## ✨ What's New in v3.0
+
+### Modular Architecture
+```
+subhunter/
+├── subhunter.py          # CLI entry point
+├── sources/              # Passive enumeration
+│   └── passive.py        # 6 sources
+├── core/                 # Core functionality
+│   ├── dns.py           # DNS resolution & brute-force
+│   ├── probe.py         # HTTP probing & tech detection
+│   ├── scanner.py       # Port scanning
+│   ├── screenshot.py    # Screenshot capture
+│   └── report.py        # HTML report generator
+├── utils/               # Utilities
+│   ├── display.py       # Colors & banner
+│   └── config.py        # Constants
+└── reports/             # Auto-saved reports
+```
+
+### New Features
 
 | Feature | Description |
 |---------|-------------|
-| 🌐 **6 Passive Sources** | crt.sh, HackerTarget, AlienVault, urlscan.io, RapidDNS, WebArchive |
-| 🔍 **HTTP Probing** | Check which subdomains are alive with status codes |
-| 🏷️ **Tech Detection** | Detect 19+ technologies (WordPress, React, Nginx, AWS, etc.) |
-| 📊 **HTML Reports** | Beautiful, dark-themed reports with charts |
-| 📁 **Resume Scan** | Interrupt and resume scans anytime |
+| 🔐 **Port Scanning** | Scan 17 common ports on discovered subdomains |
+| 📸 **Screenshots** | Capture screenshots of live web hosts |
+| 📊 **Auto Reports** | Reports auto-save to `reports/` with date + domain |
+| 🏗️ **Modular** | Clean, maintainable code structure |
 
 ---
 
@@ -34,28 +53,37 @@
 git clone https://github.com/mizazhaider-ceh/subhunter.git
 cd subhunter
 pip install -r requirements.txt
+
+# Optional: For screenshots
+pip install playwright
+playwright install chromium
 ```
 
 ---
 
 ## Usage
 
-### Basic Scan
+### Basic Scan (Auto-saves HTML report)
 ```bash
 python subhunter.py -d example.com
 ```
 
-### With HTTP Probing (Default in v2.0)
+### With Port Scanning
 ```bash
-python subhunter.py -d example.com
+python subhunter.py -d example.com --ports
 ```
 
-### Generate HTML Report
+### With Screenshots
 ```bash
-python subhunter.py -d example.com --html report.html
+python subhunter.py -d example.com --screenshots
 ```
 
-### Passive Only (No Brute-force, No Probing)
+### Full Scan (All features)
+```bash
+python subhunter.py -d example.com --ports --screenshots
+```
+
+### Passive Only (No brute-force, no probe)
 ```bash
 python subhunter.py -d example.com --no-brute --no-probe
 ```
@@ -63,16 +91,6 @@ python subhunter.py -d example.com --no-brute --no-probe
 ### Resume Interrupted Scan
 ```bash
 python subhunter.py -d example.com --resume
-```
-
-### Save to JSON
-```bash
-python subhunter.py -d example.com -o results.json
-```
-
-### Custom Wordlist
-```bash
-python subhunter.py -d example.com -w /path/to/wordlist.txt
 ```
 
 ---
@@ -84,7 +102,8 @@ python subhunter.py -d example.com -w /path/to/wordlist.txt
 | `-d, --domain` | Target domain (required) |
 | `-w, --wordlist` | Custom wordlist file |
 | `-o, --output` | Output file (.txt or .json) |
-| `--html` | Generate HTML report |
+| `--ports` | Enable port scanning |
+| `--screenshots` | Capture screenshots |
 | `--no-brute` | Skip DNS brute-forcing |
 | `--no-probe` | Skip HTTP probing |
 | `--resume` | Resume previous scan |
@@ -93,7 +112,7 @@ python subhunter.py -d example.com -w /path/to/wordlist.txt
 
 ---
 
-## 🌐 Passive Sources
+## 🌐 Passive Sources (6)
 
 | Source | Type |
 |--------|------|
@@ -106,21 +125,28 @@ python subhunter.py -d example.com -w /path/to/wordlist.txt
 
 ---
 
-## 🏷️ Technologies Detected
+## 🔐 Ports Scanned (17)
 
-WordPress, Nginx, Apache, Cloudflare, AWS, Azure, React, Vue.js, Angular, Laravel, Django, Node.js, PHP, ASP.NET, jQuery, Bootstrap, Shopify, Wix, Squarespace
+```
+21 (FTP), 22 (SSH), 23 (Telnet), 25 (SMTP), 53 (DNS), 
+80 (HTTP), 110 (POP3), 143 (IMAP), 443 (HTTPS), 
+445 (SMB), 993 (IMAPS), 995 (POP3S), 3306 (MySQL), 
+3389 (RDP), 5432 (PostgreSQL), 8080, 8443
+```
 
 ---
 
-## 📊 HTML Report Preview
+## 📊 Report Auto-Save
 
-The HTML report includes:
-- Total subdomains found
-- Alive vs dead count
-- Technology distribution chart
-- Status code breakdown
-- Sortable results table
-- Dark theme design
+Reports automatically save to `reports/` folder:
+```
+reports/
+├── example.com_20240203_120000.html
+├── hackerone.com_20240203_130000.html
+└── target.com_screenshots/
+    ├── www.target.com.png
+    └── api.target.com.png
+```
 
 ---
 
@@ -129,45 +155,35 @@ The HTML report includes:
 ```
     ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
     ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v2.0
+    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v3.0
 
 Target: hackerone.com
-Started: 2024-02-03 12:00:00
 
 [*] Phase 1: Passive Enumeration
-    Querying 6 sources...
-
   [+] crt.sh: 156 subdomains
-  [+] HackerTarget: 23 subdomains
   [+] AlienVault: 45 subdomains
-  [+] urlscan.io: 67 subdomains
-  [+] RapidDNS: 12 subdomains
-  [+] WebArchive: 89 subdomains
-
   Total from passive: 234
 
 [*] Phase 2: DNS Brute-forcing
-    Using 75 words
-
   [+] api.hackerone.com → 104.16.99.52
-  [+] docs.hackerone.com → 104.16.100.52
-
   Total from brute-force: 15
 
 [*] Phase 3: HTTP Probing & Tech Detection
-    Probing 249 subdomains...
-
   ● [200] https://www.hackerone.com [Cloudflare, React]
-  ● [200] https://api.hackerone.com [Nginx]
-  ● [301] https://docs.hackerone.com [Cloudflare]
-
   Alive: 187 / 249
+
+[*] Phase 4: Port Scanning
+  ● hackerone.com: 80, 443
+  Hosts with open ports: 45
+
+[+] HTML report saved to: reports/hackerone.com_20240203_120000.html
 
 ═════════════════════════════════════════════════════════════════
 SUMMARY
   Domain: hackerone.com
   Total Subdomains: 249
   Alive (HTTP): 187
+  Hosts with open ports: 45
 ═════════════════════════════════════════════════════════════════
 ```
 
@@ -178,6 +194,7 @@ SUMMARY
 - Python 3.8+
 - httpx
 - aiodns
+- playwright (optional, for screenshots)
 
 ---
 
@@ -185,15 +202,13 @@ SUMMARY
 
 ⚠️ **For authorized testing only.**
 
-This tool is intended for security professionals with proper authorization. Always ensure you have permission before scanning any domain.
-
 ---
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License
 
 ---
 
-**SubHunter v2.0** - *Hunt them all* 🎯  
+**SubHunter v3.0** - *Hunt them all* 🎯  
 Built By: **MIHx0** (Mizaz Haider) | Powered By: **The PenTrix**
