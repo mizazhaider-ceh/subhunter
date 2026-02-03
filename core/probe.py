@@ -1,5 +1,10 @@
 """
-HTTP probing and technology detection - Enhanced with more details
+HTTP probing and technology detection - SubHunter v4.0
+
+Enhanced with:
+- Cloud provider detection
+- CNAME tracking
+- Improved header analysis
 """
 import asyncio
 import re
@@ -9,6 +14,7 @@ from typing import Set, List, Optional, Dict
 import httpx
 from utils.display import Colors
 from utils.config import TECH_SIGNATURES
+from core.cloud import detect_cloud_provider, get_cloud_color
 
 
 async def resolve_ip(subdomain: str) -> str:
@@ -21,8 +27,19 @@ async def resolve_ip(subdomain: str) -> str:
         return ""
 
 
-async def probe_http(subdomain: str, timeout: float = 5.0) -> Dict:
-    """Probe HTTP/HTTPS for a subdomain with detailed info."""
+async def probe_http(
+    subdomain: str,
+    timeout: float = 5.0,
+    cname: str = None
+) -> Dict:
+    """
+    Probe HTTP/HTTPS for a subdomain with detailed info.
+    
+    Args:
+        subdomain: Target subdomain to probe
+        timeout: Request timeout
+        cname: Pre-resolved CNAME if available
+    """
     
     # First resolve IP
     ip = await resolve_ip(subdomain)
@@ -30,6 +47,7 @@ async def probe_http(subdomain: str, timeout: float = 5.0) -> Dict:
     result = {
         "subdomain": subdomain,
         "ip": ip,
+        "cname": cname,
         "alive": False,
         "url": None,
         "final_url": None,
@@ -44,7 +62,8 @@ async def probe_http(subdomain: str, timeout: float = 5.0) -> Dict:
         "redirect_chain": [],
         "cookies": [],
         "meta_description": None,
-        "protocol": None
+        "protocol": None,
+        "cloud_provider": None,  # NEW: Cloud provider detection
     }
     
     for protocol in ["https", "http"]:
@@ -68,9 +87,16 @@ async def probe_http(subdomain: str, timeout: float = 5.0) -> Dict:
                 result["content_length"] = len(response.content)
                 
                 # Store important headers
-                important_headers = ["x-powered-by", "x-frame-options", "x-xss-protection", 
-                                   "content-security-policy", "strict-transport-security",
-                                   "x-content-type-options", "access-control-allow-origin"]
+                important_headers = [
+                    "x-powered-by", "x-frame-options", "x-xss-protection", 
+                    "content-security-policy", "strict-transport-security",
+                    "x-content-type-options", "access-control-allow-origin",
+                    "x-amz-cf-id", "x-amz-request-id",  # AWS
+                    "x-ms-request-id",  # Azure
+                    "cf-ray", "cf-cache-status",  # Cloudflare
+                    "x-vercel-id",  # Vercel
+                    "x-netlify-request-id",  # Netlify
+                ]
                 for h in important_headers:
                     if h in response.headers:
                         result["headers"][h] = response.headers[h]
@@ -110,27 +136,69 @@ async def probe_http(subdomain: str, timeout: float = 5.0) -> Dict:
                                 result["tech"].append(tech)
                             break
                 
+                # Detect cloud provider
+                result["cloud_provider"] = detect_cloud_provider(
+                    ip=ip,
+                    cname=cname,
+                    headers=dict(response.headers)
+                )
+                
                 return result
         except:
             continue
     
+    # Even if not alive, try to detect cloud from CNAME/IP
+    if cname or ip:
+        result["cloud_provider"] = detect_cloud_provider(ip=ip, cname=cname)
+    
     return result
 
 
-async def probe_all(subdomains: Set[str], concurrency: int = 50, quiet: bool = False) -> List[Dict]:
-    """Probe all subdomains."""
+async def probe_all(
+    subdomains: Set[str],
+    concurrency: int = 50,
+    quiet: bool = False,
+    dns_results: Dict = None
+) -> List[Dict]:
+    """
+    Probe all subdomains.
+    
+    Args:
+        subdomains: Set of subdomains to probe
+        concurrency: Concurrent probes
+        quiet: Suppress output
+        dns_results: Dict mapping subdomain -> DNSResult for CNAME info
+    """
     results = []
     semaphore = asyncio.Semaphore(concurrency)
+    dns_results = dns_results or {}
     
     async def probe(sub: str):
         async with semaphore:
-            result = await probe_http(sub)
+            # Get CNAME if we have DNS info
+            cname = None
+            if sub in dns_results:
+                dns_info = dns_results[sub]
+                if hasattr(dns_info, 'cname'):
+                    cname = dns_info.cname
+                elif isinstance(dns_info, dict):
+                    cname = dns_info.get('cname')
+            
+            result = await probe_http(sub, cname=cname)
             results.append(result)
+            
             if result["alive"] and not quiet:
                 status_color = Colors.GREEN if result["status"] == 200 else Colors.YELLOW
                 tech_str = f" [{', '.join(result['tech'][:3])}]" if result["tech"] else ""
                 ip_str = f" ({result['ip']})" if result['ip'] else ""
-                print(f"  {Colors.GREEN}●{Colors.RESET} [{status_color}{result['status']}{Colors.RESET}] {result['url']}{Colors.DIM}{ip_str}{tech_str}{Colors.RESET}")
+                
+                # Cloud provider indicator
+                cloud_str = ""
+                if result.get("cloud_provider"):
+                    cloud_color = get_cloud_color(result["cloud_provider"])
+                    cloud_str = f" {cloud_color}☁ {result['cloud_provider']}{Colors.RESET}"
+                
+                print(f"  {Colors.GREEN}●{Colors.RESET} [{status_color}{result['status']}{Colors.RESET}] {result['url']}{Colors.DIM}{ip_str}{tech_str}{Colors.RESET}{cloud_str}")
     
     tasks = [probe(sub) for sub in subdomains]
     await asyncio.gather(*tasks, return_exceptions=True)

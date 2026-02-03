@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubHunter Report - example.com</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-dim: rgba(0, 255, 136, 0.1);
+            --secondary: #8b5cf6;
+            --danger: #ff5252;
+            --warning: #ffc107;
+            --info: #3b82f6;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e0e0e0;
+            --text-dim: #666;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 82, 82, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse 10s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .container { max-width: 1600px; margin: 0 auto; padding: 30px; }
+        
+        .header {
+            text-align: center;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .header .logo {
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header .domain {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4em;
+            color: var(--primary);
+            padding: 8px 20px;
+            background: var(--primary-dim);
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        
+        .header .meta { margin-top: 20px; color: var(--text-dim); font-size: 0.9em; }
+        .header .branding { margin-top: 20px; font-size: 0.85em; color: var(--text-dim); }
+        .header .branding span { color: var(--primary); font-weight: 600; }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+        
+        .stat-card .icon { font-size: 1.5em; margin-bottom: 8px; }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-card .label {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.7em;
+            margin-top: 5px;
+        }
+        
+        .section {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        
+        .mini-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border);
+        }
+        .mini-card h3 { color: var(--primary); font-size: 0.9em; margin-bottom: 10px; }
+        .mini-card .list { font-size: 0.85em; }
+        .mini-card .list-item { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; }
+        .mini-card .list-item:last-child { border-bottom: none; }
+        
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tech-tag {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(0, 255, 136, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tech-tag .count { background: var(--secondary); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 700; }
+        
+        .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+        .bar-row { display: flex; align-items: center; gap: 12px; }
+        .bar-label { width: 50px; font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.9em; }
+        .bar { height: 25px; border-radius: 12px; min-width: 15px; }
+        .bar-value { font-weight: 600; color: var(--text-dim); font-size: 0.85em; }
+        
+        .table-container { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: rgba(0, 255, 136, 0.05); color: var(--primary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 1px; position: sticky; top: 0; }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+        
+        .status { padding: 4px 12px; border-radius: 15px; font-size: 0.8em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .status-200 { background: rgba(0, 255, 136, 0.15); color: var(--primary); }
+        .status-301, .status-302, .status-307, .status-308 { background: rgba(255, 193, 7, 0.15); color: var(--warning); }
+        .status-400, .status-401, .status-403, .status-404, .status-500, .status-502, .status-503 { background: rgba(255, 82, 82, 0.15); color: var(--danger); }
+        
+        .badge { display: inline-block; padding: 3px 10px; margin: 2px; border-radius: 12px; font-size: 0.7em; font-weight: 500; }
+        .tech-badge { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        .port-badge { background: rgba(255, 82, 82, 0.15); color: #ff8888; font-family: 'JetBrains Mono', monospace; }
+        .ip-badge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; font-family: 'JetBrains Mono', monospace; }
+        .time-badge { background: rgba(0, 255, 136, 0.1); color: var(--primary); }
+        .size-badge { background: rgba(255, 193, 7, 0.1); color: var(--warning); }
+        
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { color: #fff; text-shadow: 0 0 10px var(--primary); }
+        
+        .expandable { cursor: pointer; }
+        .expandable-content { display: none; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 0.85em; }
+        .expandable.open .expandable-content { display: block; }
+        
+        .header-row { display: flex; gap: 5px; flex-wrap: wrap; }
+        .header-badge { background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; }
+        
+        .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .screenshot-card { background: rgba(0, 0, 0, 0.3); border-radius: 15px; overflow: hidden; border: 1px solid var(--border); transition: all 0.3s ease; }
+        .screenshot-card:hover { transform: scale(1.02); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2); }
+        .screenshot-card img { width: 100%; height: auto; display: block; }
+        .screenshot-card .caption { padding: 12px; font-size: 0.8em; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+        
+        .dead-list { max-height: 200px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; color: var(--text-dim); }
+        .dead-item { padding: 3px 0; }
+        
+        .footer { text-align: center; padding: 40px; color: var(--text-dim); border-top: 1px solid var(--border); margin-top: 40px; }
+        .footer .brand { font-size: 1.2em; color: var(--primary); font-weight: 600; margin-bottom: 10px; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .header .logo { font-size: 2em; }
+            .stat-card .number { font-size: 1.5em; }
+            th, td { padding: 8px; font-size: 0.75em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎯 SubHunter Report</div>
+            <div class="domain">example.com</div>
+            <div class="meta">
+                Generated: February 03, 2026 at 03:01:21 | Version 4.0
+            </div>
+            <div class="branding">
+                Built by <span>MIHx0</span> (Mizaz Haider) • Powered by <span>The PenTrix</span>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="icon">🔍</div>
+                <div class="number">3</div>
+                <div class="label">Total Found</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <div class="number">2</div>
+                <div class="label">Alive</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">❌</div>
+                <div class="number">1</div>
+                <div class="label">Dead</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🌐</div>
+                <div class="number">2</div>
+                <div class="label">Unique IPs</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔧</div>
+                <div class="number">1</div>
+                <div class="label">Technologies</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔐</div>
+                <div class="number">2</div>
+                <div class="label">HTTPS</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⚡</div>
+                <div class="number">122</div>
+                <div class="label">Avg ms</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔓</div>
+                <div class="number">0</div>
+                <div class="label">Open Ports</div>
+            </div>
+        </div>
+        
+        <div class="grid-2">
+            <div class="section">
+                <h2>📊 Status Codes</h2>
+                <div class="bar-chart">
+                    <div class="bar-row"><span class="bar-label">200</span><div class="bar" style="width: 100%; background: #00ff88;"></div><span class="bar-value">2</span></div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🖥️ Server Distribution</h2>
+                <div class="tech-grid">
+                    <div class="tech-tag">cloudflare<span class="count">2</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔧 Technologies Detected (1)</h2>
+            <div class="tech-grid">
+                <div class="tech-tag">Cloudflare<span class="count">2</span></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🌐 Live Subdomains (2)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subdomain</th>
+                            <th>IP</th>
+                            <th>Cloud</th>
+                            <th>Status</th>
+                            <th>Title</th>
+                            <th>Size</th>
+                            <th>Time</th>
+                            <th>Technologies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="https://example.com" target="_blank">example.com</a></td>
+                            <td><span class="badge ip-badge">104.18.27.120</span></td>
+                            <td><span class="badge" style="background: #f3802020; color: #f38020;">☁ Cloudflare</span></td>
+                            <td><span class="status status-200">200</span></td>
+                            <td>Example Domain</td>
+                            <td><span class="badge size-badge">513 B</span></td>
+                            <td><span class="badge time-badge">124ms</span></td>
+                            <td><span class="badge tech-badge">Cloudflare</span></td>
+                        </tr><tr>
+                            <td><a href="https://www.example.com" target="_blank">www.example.com</a></td>
+                            <td><span class="badge ip-badge">104.18.26.120</span></td>
+                            <td><span class="badge" style="background: #f3802020; color: #f38020;">☁ Cloudflare</span></td>
+                            <td><span class="status status-200">200</span></td>
+                            <td>Example Domain</td>
+                            <td><span class="badge size-badge">513 B</span></td>
+                            <td><span class="badge time-badge">120ms</span></td>
+                            <td><span class="badge tech-badge">Cloudflare</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>☁️ Cloud Provider Distribution (1 providers)</h2>
+            <div class="tech-grid">
+                <div class="tech-tag" style="background: linear-gradient(135deg, #f3802030, #f3802010); border-color: #f3802050;">☁ Cloudflare<span class="count" style="background: #f38020;">2</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛡️ Security Headers (2 hosts with headers)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subdomain</th>
+                            <th>Security Headers Found</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>www.example.com</td>
+                            <td><div class="header-row"><span class="header-badge">cf-ray</span><span class="header-badge">cf-cache-status</span></div></td>
+                        </tr><tr>
+                            <td>example.com</td>
+                            <td><div class="header-row"><span class="header-badge">cf-ray</span><span class="header-badge">cf-cache-status</span></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Dead Subdomains (1)</h2>
+            <div class="dead-list">
+                <div class="dead-item">20mail2.example.com</div>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="brand">SubHunter v4.0</div>
+            <p>Built by MIHx0 (Mizaz Haider) • Powered by The PenTrix</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">For authorized security testing only</p>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle expandable sections
+        document.querySelectorAll('.expandable').forEach(el => {
+            el.addEventListener('click', () => el.classList.toggle('open'));
+        });
+    </script>
+</body>
+</html>

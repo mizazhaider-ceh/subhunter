@@ -1,5 +1,5 @@
 """
-Colors and display utilities for SubHunter
+Colors and display utilities for SubHunter v4.0
 """
 
 class Colors:
@@ -14,7 +14,7 @@ class Colors:
     RESET = '\033[0m'
 
 
-VERSION = "3.0"
+VERSION = "4.0"
 
 
 def print_banner():
@@ -23,10 +23,10 @@ def print_banner():
 {Colors.CYAN}
     ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
     ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  {Colors.YELLOW}v{VERSION}{Colors.CYAN}
+    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  {Colors.YELLOW}v{VERSION} PRO{Colors.CYAN}
 {Colors.RESET}
     {Colors.GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓{Colors.RESET}
-    {Colors.GREEN}▓{Colors.RESET}  {Colors.BOLD}Fast Subdomain Enumeration Tool{Colors.RESET}                  {Colors.GREEN}▓{Colors.RESET}
+    {Colors.GREEN}▓{Colors.RESET}  {Colors.BOLD}Fast Subdomain Enumeration Tool - Pro Edition{Colors.RESET}       {Colors.GREEN}▓{Colors.RESET}
     {Colors.GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓{Colors.RESET}
     {Colors.GREEN}▓{Colors.RESET}                                                    {Colors.GREEN}▓{Colors.RESET}
     {Colors.GREEN}▓{Colors.RESET}   {Colors.MAGENTA}◆ Built By  :{Colors.RESET} {Colors.BOLD}MIHx0{Colors.RESET} (Mizaz Haider)              {Colors.GREEN}▓{Colors.RESET}
@@ -34,5 +34,6 @@ def print_banner():
     {Colors.GREEN}▓{Colors.RESET}                                                    {Colors.GREEN}▓{Colors.RESET}
     {Colors.GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓{Colors.RESET}
     
-    {Colors.DIM}[ Passive Sources • HTTP Probe • Port Scan • Screenshots • Tech Detection ]{Colors.RESET}
+    {Colors.DIM}[ 🧠 Wildcard • 🔄 Recursive • ☁️ Cloud • 📡 Probe • 🔐 Ports • 📸 Screenshots ]{Colors.RESET}
 """)
+

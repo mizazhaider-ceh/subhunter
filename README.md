@@ -1,11 +1,11 @@
 # SubHunter 🎯
 
-**Fast Subdomain Enumeration Tool v3.0**
+**Fast Subdomain Enumeration Tool v4.0 PRO**
 
 ```
 ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
 ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v3.0
+╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v4.0 PRO
 ```
 
 **Built By:** MIHx0 (Mizaz Haider)  
@@ -16,34 +16,39 @@
 
 ---
 
-## ✨ What's New in v3.0
+## ✨ What's New in v4.0 PRO
 
-### Modular Architecture
+| Feature | Description |
+|---------|-------------|
+| 🧠 **Wildcard Detection** | Automatically detect and filter wildcard DNS responses |
+| 🔄 **Recursive Mode** | Discover sub-subdomains (e.g., `dev.api.example.com`) |
+| ☁️ **Cloud Detection** | Identify AWS, Azure, GCP, Cloudflare, and 8 more cloud providers |
+| 🔐 **Port Scanning** | Scan 17 common ports on discovered subdomains |
+| 📸 **Screenshots** | Capture screenshots (Playwright or Selenium) |
+| 📊 **Pro Reports** | Beautiful HTML reports with cloud distribution charts |
+
+---
+
+## 📁 Architecture
+
 ```
 subhunter/
 ├── subhunter.py          # CLI entry point
 ├── sources/              # Passive enumeration
 │   └── passive.py        # 6 sources
 ├── core/                 # Core functionality
-│   ├── dns.py           # DNS resolution & brute-force
-│   ├── probe.py         # HTTP probing & tech detection
+│   ├── dns.py           # DNS resolution, brute-force & recursive
+│   ├── probe.py         # HTTP probing, tech & cloud detection
 │   ├── scanner.py       # Port scanning
 │   ├── screenshot.py    # Screenshot capture
-│   └── report.py        # HTML report generator
+│   ├── report.py        # HTML report generator
+│   ├── wildcard.py      # Wildcard DNS detection (v4.0)
+│   └── cloud.py         # Cloud provider detection (v4.0)
 ├── utils/               # Utilities
 │   ├── display.py       # Colors & banner
 │   └── config.py        # Constants
 └── reports/             # Auto-saved reports
 ```
-
-### New Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔐 **Port Scanning** | Scan 17 common ports on discovered subdomains |
-| 📸 **Screenshots** | Capture screenshots of live web hosts |
-| 📊 **Auto Reports** | Reports auto-save to `reports/` with date + domain |
-| 🏗️ **Modular** | Clean, maintainable code structure |
 
 ---
 
@@ -69,18 +74,23 @@ playwright install chromium
 If Playwright fails (e.g., on Python 3.13 due to greenlet incompatibility):
 ```bash
 pip install selenium webdriver-manager
-# Make sure Chrome/Chromium is installed on your system
 ```
 
-> **Note:** SubHunter automatically detects which engine is available and uses it. If neither is installed, screenshots are skipped gracefully.
+> **Note:** SubHunter automatically detects which engine is available.
 
 ---
 
 ## Usage
 
-### Basic Scan (Auto-saves HTML report)
+### Basic Scan
 ```bash
 python subhunter.py -d example.com
+```
+
+### With Recursive Discovery (v4.0)
+```bash
+python subhunter.py -d example.com --recursive
+python subhunter.py -d example.com --recursive --recursive-depth 3
 ```
 
 ### With Port Scanning
@@ -93,19 +103,19 @@ python subhunter.py -d example.com --ports
 python subhunter.py -d example.com --screenshots
 ```
 
-### Full Scan (All features)
+### Full Pro Scan
 ```bash
-python subhunter.py -d example.com --ports --screenshots
+python subhunter.py -d example.com --recursive --ports --screenshots
 ```
 
-### Passive Only (No brute-force, no probe)
+### Passive Only
 ```bash
 python subhunter.py -d example.com --no-brute --no-probe
 ```
 
-### Resume Interrupted Scan
+### Disable Wildcard Filter
 ```bash
-python subhunter.py -d example.com --resume
+python subhunter.py -d example.com --no-wildcard-filter
 ```
 
 ---
@@ -119,11 +129,38 @@ python subhunter.py -d example.com --resume
 | `-o, --output` | Output file (.txt or .json) |
 | `--ports` | Enable port scanning |
 | `--screenshots` | Capture screenshots |
+| `--recursive` | Enable recursive sub-subdomain discovery |
+| `--recursive-depth` | Max recursion depth (default: 2) |
 | `--no-brute` | Skip DNS brute-forcing |
 | `--no-probe` | Skip HTTP probing |
+| `--no-wildcard-filter` | Disable wildcard DNS filtering |
 | `--resume` | Resume previous scan |
 | `-c, --concurrency` | Concurrent queries (default: 100) |
 | `-q, --quiet` | Quiet mode |
+
+---
+
+## 🧠 Wildcard Detection
+
+SubHunter automatically detects wildcard DNS by resolving random subdomains. If all random queries return the same IP, it's filtered to avoid false positives.
+
+---
+
+## ☁️ Cloud Providers Detected (11)
+
+| Provider | Detection Method |
+|----------|------------------|
+| AWS | CNAME, headers, IP ranges |
+| Azure | CNAME, headers, IP ranges |
+| GCP (Google Cloud) | CNAME, headers, IP ranges |
+| Cloudflare | CNAME, headers, CF-Ray |
+| DigitalOcean | CNAME, IP ranges |
+| Heroku | CNAME |
+| Netlify | CNAME, headers |
+| Vercel | CNAME, headers |
+| Fastly | CNAME, headers |
+| Akamai | CNAME |
+| GitHub Pages | CNAME |
 
 ---
 
@@ -147,59 +184,6 @@ python subhunter.py -d example.com --resume
 80 (HTTP), 110 (POP3), 143 (IMAP), 443 (HTTPS), 
 445 (SMB), 993 (IMAPS), 995 (POP3S), 3306 (MySQL), 
 3389 (RDP), 5432 (PostgreSQL), 8080, 8443
-```
-
----
-
-## 📊 Report Auto-Save
-
-Reports automatically save to `reports/` folder:
-```
-reports/
-├── example.com_20240203_120000.html
-├── hackerone.com_20240203_130000.html
-└── target.com_screenshots/
-    ├── www.target.com.png
-    └── api.target.com.png
-```
-
----
-
-## Example Output
-
-```
-    ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗
-    ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝
-    ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═  v3.0
-
-Target: hackerone.com
-
-[*] Phase 1: Passive Enumeration
-  [+] crt.sh: 156 subdomains
-  [+] AlienVault: 45 subdomains
-  Total from passive: 234
-
-[*] Phase 2: DNS Brute-forcing
-  [+] api.hackerone.com → 104.16.99.52
-  Total from brute-force: 15
-
-[*] Phase 3: HTTP Probing & Tech Detection
-  ● [200] https://www.hackerone.com [Cloudflare, React]
-  Alive: 187 / 249
-
-[*] Phase 4: Port Scanning
-  ● hackerone.com: 80, 443
-  Hosts with open ports: 45
-
-[+] HTML report saved to: reports/hackerone.com_20240203_120000.html
-
-═════════════════════════════════════════════════════════════════
-SUMMARY
-  Domain: hackerone.com
-  Total Subdomains: 249
-  Alive (HTTP): 187
-  Hosts with open ports: 45
-═════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -228,5 +212,5 @@ MIT License
 
 ---
 
-**SubHunter v3.0** - *Hunt them all* 🎯  
+**SubHunter v4.0 PRO** - *Hunt them all* 🎯  
 Built By: **MIHx0** (Mizaz Haider) | Powered By: **The PenTrix**

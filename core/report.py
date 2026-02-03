@@ -1,5 +1,9 @@
 """
-HTML Report Generator - Premium Dark Theme with Full Details
+HTML Report Generator v4.0 - Premium Dark Theme with Full Details
+
+Enhanced with:
+- Cloud provider distribution
+- CNAME tracking
 """
 from datetime import datetime
 from pathlib import Path
@@ -59,6 +63,28 @@ def generate_html_report(
     
     # Unique IPs
     unique_ips = set(r.get("ip") for r in alive if r.get("ip"))
+    
+    # Cloud provider distribution (v4.0)
+    cloud_counts = {}
+    for r in alive:
+        provider = r.get("cloud_provider")
+        if provider:
+            cloud_counts[provider] = cloud_counts.get(provider, 0) + 1
+    
+    # Cloud provider colors
+    cloud_colors = {
+        "AWS": "#ff9900",
+        "Azure": "#0078d4",
+        "GCP": "#4285f4",
+        "Cloudflare": "#f38020",
+        "DigitalOcean": "#0080ff",
+        "Heroku": "#6762a6",
+        "Netlify": "#00ad9f",
+        "Vercel": "#000000",
+        "Fastly": "#ff282d",
+        "Akamai": "#0096d6",
+        "GitHub": "#333333",
+    }
     
     # Generate status code chart data
     status_chart = ""
@@ -410,27 +436,42 @@ def generate_html_report(
                         <tr>
                             <th>Subdomain</th>
                             <th>IP</th>
+                            <th>Cloud</th>
                             <th>Status</th>
                             <th>Title</th>
                             <th>Size</th>
                             <th>Time</th>
                             <th>Technologies</th>
-                            <th>Server</th>
                         </tr>
                     </thead>
                     <tbody>
                         {"".join(f'''<tr>
                             <td><a href="{r.get('url', '#')}" target="_blank">{r['subdomain']}</a></td>
                             <td><span class="badge ip-badge">{r.get('ip', '-') or '-'}</span></td>
+                            <td><span class="badge" style="background: {cloud_colors.get(r.get('cloud_provider', ''), 'transparent')}20; color: {cloud_colors.get(r.get('cloud_provider', ''), '#666')};">{'☁ ' + r.get('cloud_provider') if r.get('cloud_provider') else '-'}</span></td>
                             <td><span class="status status-{r.get('status', 0)}">{r.get('status', '-')}</span></td>
-                            <td>{(r.get('title') or '-')[:40]}</td>
+                            <td>{(r.get('title') or '-')[:35]}</td>
                             <td><span class="badge size-badge">{format_size(r.get('content_length', 0))}</span></td>
                             <td><span class="badge time-badge">{r.get('response_time', 0)}ms</span></td>
-                            <td>{"".join(f'<span class="badge tech-badge">{t}</span>' for t in r.get('tech', [])[:4])}</td>
-                            <td>{(r.get('server', '-') or '-')[:20]}</td>
+                            <td>{"".join(f'<span class="badge tech-badge">{t}</span>' for t in r.get('tech', [])[:3])}</td>
                         </tr>''' for r in sorted(alive, key=lambda x: x['subdomain']))}
                     </tbody>
                 </table>
+            </div>
+        </div>
+"""
+    
+    # Cloud Provider Distribution section (v4.0)
+    if cloud_counts:
+        cloud_tags = "".join(
+            f'<div class="tech-tag" style="background: linear-gradient(135deg, {cloud_colors.get(provider, "#666")}30, {cloud_colors.get(provider, "#666")}10); border-color: {cloud_colors.get(provider, "#666")}50;">☁ {provider}<span class="count" style="background: {cloud_colors.get(provider, "#666")};">{count}</span></div>'
+            for provider, count in sorted(cloud_counts.items(), key=lambda x: -x[1])
+        )
+        html += f"""
+        <div class="section">
+            <h2>☁️ Cloud Provider Distribution ({len(cloud_counts)} providers)</h2>
+            <div class="tech-grid">
+                {cloud_tags}
             </div>
         </div>
 """
