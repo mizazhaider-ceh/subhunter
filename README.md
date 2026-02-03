@@ -53,11 +53,26 @@ subhunter/
 git clone https://github.com/mizazhaider-ceh/subhunter.git
 cd subhunter
 pip install -r requirements.txt
+```
 
-# Optional: For screenshots
+### 📸 Screenshots Setup (Optional)
+
+SubHunter supports **two screenshot engines** with automatic fallback:
+
+**Option 1: Playwright (Recommended)**
+```bash
 pip install playwright
 playwright install chromium
 ```
+
+**Option 2: Selenium (Fallback)**  
+If Playwright fails (e.g., on Python 3.13 due to greenlet incompatibility):
+```bash
+pip install selenium webdriver-manager
+# Make sure Chrome/Chromium is installed on your system
+```
+
+> **Note:** SubHunter automatically detects which engine is available and uses it. If neither is installed, screenshots are skipped gracefully.
 
 ---
 
@@ -191,10 +206,13 @@ SUMMARY
 
 ## Requirements
 
-- Python 3.8+
-- httpx
-- aiodns
-- playwright (optional, for screenshots)
+| Package | Required | Purpose |
+|---------|----------|---------|
+| Python 3.8+ | ✅ Yes | Runtime |
+| httpx | ✅ Yes | HTTP client |
+| aiodns | ✅ Yes | DNS resolution |
+| playwright | ⭕ Optional | Screenshots (recommended) |
+| selenium | ⭕ Optional | Screenshots (fallback) |
 
 ---
 
