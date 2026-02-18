@@ -1,14 +1,23 @@
 """
-HTML Report Generator v4.0 - Premium Dark Theme with Full Details
+HTML Report Generator v5.0 - Premium Dark Theme with Full Details
 
 Enhanced with:
 - Cloud provider distribution
 - CNAME tracking
+- XSS-safe HTML escaping
 """
+import html as html_module
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict
 from utils.display import VERSION
+
+
+def esc(text) -> str:
+    """HTML-escape user-controlled strings to prevent XSS."""
+    if text is None:
+        return ""
+    return html_module.escape(str(text))
 
 
 def generate_html_report(
@@ -419,7 +428,7 @@ def generate_html_report(
             <div class="section">
                 <h2>🖥️ Server Distribution</h2>
                 <div class="tech-grid">
-                    {"".join(f'<div class="tech-tag">{server}<span class="count">{count}</span></div>' for server, count in sorted(server_counts.items(), key=lambda x: -x[1])[:10])}
+                    {"\n".join(f'<div class="tech-tag">{esc(server)}<span class="count">{count}</span></div>' for server, count in sorted(server_counts.items(), key=lambda x: -x[1])[:10])}
                 </div>
             </div>
         </div>
@@ -427,7 +436,7 @@ def generate_html_report(
         <div class="section">
             <h2>🔧 Technologies Detected ({len(tech_counts)})</h2>
             <div class="tech-grid">
-                {"".join(f'<div class="tech-tag">{tech}<span class="count">{count}</span></div>' for tech, count in sorted(tech_counts.items(), key=lambda x: -x[1]))}
+                {"\n".join(f'<div class="tech-tag">{esc(tech)}<span class="count">{count}</span></div>' for tech, count in sorted(tech_counts.items(), key=lambda x: -x[1]))}
             </div>
         </div>
         
@@ -449,14 +458,14 @@ def generate_html_report(
                     </thead>
                     <tbody>
                         {"".join(f'''<tr>
-                            <td><a href="{r.get('url', '#')}" target="_blank">{r['subdomain']}</a></td>
-                            <td><span class="badge ip-badge">{r.get('ip', '-') or '-'}</span></td>
-                            <td><span class="badge" style="background: {cloud_colors.get(r.get('cloud_provider', ''), 'transparent')}20; color: {cloud_colors.get(r.get('cloud_provider', ''), '#666')};">{'☁ ' + r.get('cloud_provider') if r.get('cloud_provider') else '-'}</span></td>
+                            <td><a href="{esc(r.get('url', '#'))}" target="_blank">{esc(r['subdomain'])}</a></td>
+                            <td><span class="badge ip-badge">{esc(r.get('ip', '-') or '-')}</span></td>
+                            <td><span class="badge" style="background: {cloud_colors.get(r.get('cloud_provider', ''), 'transparent')}20; color: {cloud_colors.get(r.get('cloud_provider', ''), '#666')};">{'☁ ' + esc(r.get('cloud_provider')) if r.get('cloud_provider') else '-'}</span></td>
                             <td><span class="status status-{r.get('status', 0)}">{r.get('status', '-')}</span></td>
-                            <td>{(r.get('title') or '-')[:35]}</td>
+                            <td>{esc((r.get('title') or '-')[:35])}</td>
                             <td><span class="badge size-badge">{format_size(r.get('content_length', 0))}</span></td>
                             <td><span class="badge time-badge">{r.get('response_time', 0)}ms</span></td>
-                            <td>{"".join(f'<span class="badge tech-badge">{t}</span>' for t in r.get('tech', [])[:3])}</td>
+                            <td>{"".join(f'<span class="badge tech-badge">{esc(t)}</span>' for t in r.get('tech', [])[:3])}</td>
                         </tr>''' for r in sorted(alive, key=lambda x: x['subdomain']))}
                     </tbody>
                 </table>
@@ -464,7 +473,7 @@ def generate_html_report(
         </div>
 """
     
-    # Cloud Provider Distribution section (v4.0)
+    # Cloud Provider Distribution section (v5.0)
     if cloud_counts:
         cloud_tags = "".join(
             f'<div class="tech-tag" style="background: linear-gradient(135deg, {cloud_colors.get(provider, "#666")}30, {cloud_colors.get(provider, "#666")}10); border-color: {cloud_colors.get(provider, "#666")}50;">☁ {provider}<span class="count" style="background: {cloud_colors.get(provider, "#666")};">{count}</span></div>'
@@ -503,8 +512,8 @@ def generate_html_report(
                     </thead>
                     <tbody>
                         {"".join(f'''<tr>
-                            <td>{h['subdomain']}</td>
-                            <td><div class="header-row">{"".join(f'<span class="header-badge">{k}</span>' for k in h['headers'].keys())}</div></td>
+                            <td>{esc(h['subdomain'])}</td>
+                            <td><div class="header-row">{"".join(f'<span class="header-badge">{esc(k)}</span>' for k in h['headers'].keys())}</div></td>
                         </tr>''' for h in security_headers_data[:50])}
                     </tbody>
                 </table>
@@ -529,8 +538,8 @@ def generate_html_report(
                     </thead>
                     <tbody>
                         {"".join(f'''<tr>
-                            <td>{r['subdomain']}</td>
-                            <td><a href="{r.get('final_url', '#')}" target="_blank">{(r.get('final_url') or '-')[:50]}</a></td>
+                            <td>{esc(r['subdomain'])}</td>
+                            <td><a href="{esc(r.get('final_url', '#'))}" target="_blank">{esc((r.get('final_url') or '-')[:50])}</a></td>
                             <td>{len(r.get('redirect_chain', []))} redirect(s)</td>
                         </tr>''' for r in redirects[:30])}
                     </tbody>
@@ -546,7 +555,7 @@ def generate_html_report(
         hosts_html = ""
         for r in hosts_with_ports[:10]:
             port_badges = "".join(f'<span class="badge port-badge">{p}</span>' for p in r["open_ports"][:5])
-            hosts_html += f'<div class="list-item"><span>{r["host"]}</span><span>{port_badges}</span></div>'
+            hosts_html += f'<div class="list-item"><span>{esc(r["host"])}</span><span>{port_badges}</span></div>'
         
         html += f"""
         <div class="section">
@@ -602,11 +611,11 @@ def generate_html_report(
             
             takeover_html += f'''
             <tr>
-                <td>{t['subdomain']}</td>
-                <td>{t['cname']}</td>
-                <td><span class="badge tech-badge">{t['service']}</span></td>
+                <td>{esc(t['subdomain'])}</td>
+                <td>{esc(t['cname'])}</td>
+                <td><span class="badge tech-badge">{esc(t['service'])}</span></td>
                 <td>{status_badge}</td>
-                <td>{', '.join(t['fingerprints'])}</td>
+                <td>{esc(', '.join(t['fingerprints']))}</td>
             </tr>
             '''
             
@@ -638,8 +647,8 @@ def generate_html_report(
         for v in vhost_results:
             vhost_html += f'''
             <tr>
-                <td>{v['ip']}</td>
-                <td><span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">{v['vhost']}</span></td>
+                <td>{esc(v['ip'])}</td>
+                <td><span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">{esc(v['vhost'])}</span></td>
                 <td><span class="status status-{v['status']}">{v['status']}</span></td>
                 <td>{v['len']}</td>
             </tr>
@@ -673,7 +682,7 @@ def generate_html_report(
         if js_results.get('secrets'):
             secrets_html = '<div class="mini-card" style="border-color: #ff5252;"><h3>🔑 Potential Secrets</h3><div class="list">'
             for s in js_results['secrets']:
-                secrets_html += f'<div class="list-item"><span style="color: #ff5252; font-family: monospace;">{s}</span></div>'
+                secrets_html += f'<div class="list-item"><span style="color: #ff5252; font-family: monospace;">{esc(s)}</span></div>'
             secrets_html += '</div></div>'
             
         # Endpoints
@@ -681,7 +690,7 @@ def generate_html_report(
         if js_results.get('endpoints'):
             endpoints_html = '<div class="mini-card"><h3>🔗 Discovered Endpoints (Top 50)</h3><div class="list">'
             for e in list(js_results['endpoints'])[:50]:
-                endpoints_html += f'<div class="list-item"><span style="font-family: monospace; color: #a78bfa;">{e}</span></div>'
+                endpoints_html += f'<div class="list-item"><span style="font-family: monospace; color: #a78bfa;">{esc(e)}</span></div>'
             endpoints_html += '</div></div>'
 
         # Subdomains
@@ -689,7 +698,7 @@ def generate_html_report(
         if js_results.get('subdomains'):
             subs_html = '<div class="mini-card"><h3>📄 JS Subdomains</h3><div class="list">'
             for s in list(js_results['subdomains'])[:20]:
-                subs_html += f'<div class="list-item"><span>{s}</span></div>'
+                subs_html += f'<div class="list-item"><span>{esc(s)}</span></div>'
             subs_html += '</div></div>'
 
         if secrets_html or endpoints_html or subs_html:
@@ -710,7 +719,7 @@ def generate_html_report(
         <div class="section">
             <h2>❌ Dead Subdomains ({len(dead)})</h2>
             <div class="dead-list">
-                {"".join(f'<div class="dead-item">{r["subdomain"]}</div>' for r in dead[:100])}
+                {"".join(f'<div class="dead-item">{esc(r["subdomain"])}</div>' for r in dead[:100])}
                 {f'<div class="dead-item">...and {len(dead) - 100} more</div>' if len(dead) > 100 else ''}
             </div>
         </div>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="440" viewBox="0 0 850 440">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap');
+      .term-bg { fill: #0d1117; }
+      .title-bar { fill: #161b22; }
+      .dot-red { fill: #ff5f56; }
+      .dot-yellow { fill: #ffbd2e; }
+      .dot-green { fill: #27c93f; }
+      .title-text { fill: #8b949e; font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 12px; }
+      .text { fill: #c9d1d9; font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 13px; }
+      .cyan { fill: #00ffcc; }
+      .green { fill: #3fb950; }
+      .yellow { fill: #d29922; }
+      .magenta { fill: #bc8cff; }
+      .bold { font-weight: 700; }
+      .dim { fill: #484f58; }
+      .white { fill: #f0f6fc; }
+      .blue { fill: #58a6ff; }
+      .red { fill: #ff7b72; }
+      .orange { fill: #ffa657; }
+    </style>
+  </defs>
+
+  <!-- Terminal Window -->
+  <rect class="term-bg" width="850" height="440" rx="10" ry="10"/>
+  <rect class="title-bar" width="850" height="38" rx="10" ry="10"/>
+  <rect class="term-bg" x="0" y="28" width="850" height="12"/>
+
+  <!-- Window Dots -->
+  <circle class="dot-red" cx="20" cy="19" r="6"/>
+  <circle class="dot-yellow" cx="40" cy="19" r="6"/>
+  <circle class="dot-green" cx="60" cy="19" r="6"/>
+  <text class="title-text" x="380" y="23" text-anchor="middle">SubHunter — Scan Summary</text>
+
+  <!-- Summary Box -->
+  <text class="cyan bold" x="30" y="66" xml:space="preserve">═══════════════════════════════════════════════════════════════════</text>
+  <text class="green bold" x="30" y="88" xml:space="preserve">                         SCAN COMPLETE ✓</text>
+  <text class="cyan bold" x="30" y="106" xml:space="preserve">═══════════════════════════════════════════════════════════════════</text>
+
+  <!-- Stats -->
+  <text class="white bold" x="30" y="136" xml:space="preserve">  📌 Domain:              </text><text class="cyan" x="300" y="136">hackthebox.com</text>
+  <text class="white bold" x="30" y="158" xml:space="preserve">  ⏱  Duration:            </text><text class="text" x="300" y="158">2 minutes 34 seconds</text>
+  <text class="white bold" x="30" y="180" xml:space="preserve">  🔍 Sources Used:        </text><text class="text" x="300" y="180">6 passive + DNS brute-force</text>
+
+  <text class="dim" x="30" y="204" xml:space="preserve">  ─────────────────────────────────────────────────────────────</text>
+
+  <text class="white bold" x="30" y="228" xml:space="preserve">  📊 Total Subdomains:    </text><text class="cyan bold" x="300" y="228">265</text>
+  <text class="white bold" x="30" y="250" xml:space="preserve">  ✅ Alive (200-399):     </text><text class="green bold" x="300" y="250">188</text><text class="dim" x="340" y="250">(70.9%)</text>
+  <text class="white bold" x="30" y="272" xml:space="preserve">  ❌ Dead / Filtered:     </text><text class="red" x="300" y="272">77</text>
+  <text class="white bold" x="30" y="294" xml:space="preserve">  ☁️  Cloud Hosted:        </text><text class="orange" x="300" y="294">188</text><text class="dim" x="340" y="294">(Cloudflare: 142, AWS: 31, Azure: 8, Heroku: 7)</text>
+  <text class="white bold" x="30" y="316" xml:space="preserve">  🔐 Open Ports Found:    </text><text class="yellow" x="300" y="316">412 across 188 hosts</text>
+  <text class="white bold" x="30" y="338" xml:space="preserve">  ⚠️  Takeover Risks:      </text><text class="red bold" x="300" y="338">1 VULNERABLE</text><text class="dim" x="440" y="338">(old-blog → herokuapp.com)</text>
+
+  <text class="dim" x="30" y="362" xml:space="preserve">  ─────────────────────────────────────────────────────────────</text>
+
+  <text class="white bold" x="30" y="386" xml:space="preserve">  📄 Report saved:        </text><text class="blue" x="300" y="386">reports/hackthebox.com_20260218_143422.html</text>
+  <text class="white bold" x="30" y="408" xml:space="preserve">  💾 JSON export:         </text><text class="blue" x="300" y="408">results.json</text>
+  <text class="white bold" x="30" y="430" xml:space="preserve">  🎯 </text><text class="green bold" x="68" y="430">Hunt complete — open the HTML report for full details</text>
+</svg>

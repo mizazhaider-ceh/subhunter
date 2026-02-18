@@ -1,4 +1,8 @@
+"""
+JavaScript File Analysis Module - SubHunter v5.0
 
+Extracts subdomains, API endpoints, and potential secrets from JavaScript files.
+"""
 import re
 import httpx
 import asyncio
@@ -52,7 +56,7 @@ async def parse_js_files(domain: str, probe_results: List[Dict], quiet: bool = F
                         # construct absolute
                         base = url.rstrip('/')
                         js_urls.add(f"{base}{f}")
-            except:
+            except Exception:
                 pass
     
     if not quiet and js_urls:
@@ -85,7 +89,7 @@ async def parse_js_files(domain: str, probe_results: List[Dict], quiet: bool = F
                 subs = re.findall(sub_regex, content)
                 results["subdomains"].update(subs)
                 
-            except:
+            except Exception:
                 pass
 
     if not quiet:

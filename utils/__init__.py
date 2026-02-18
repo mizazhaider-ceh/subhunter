@@ -1,1 +1,1 @@
-"""SubHunter v3.0 - Utils Module"""
+"""SubHunter v5.0 - Utils Module"""

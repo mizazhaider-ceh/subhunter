@@ -9,14 +9,14 @@
 ║   ███████║╚██████╔╝██████╔╝██║  ██║╚██████╔╝██║ ╚████║   ██║   ███████╗██║  ██║║
 ║   ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝║
 ║                                                                               ║
-║   Fast Subdomain Enumeration Tool                                   v4.0     ║
+║   Fast Subdomain Enumeration Tool                                   v5.0     ║
 ║                                                                               ║
 ║   Built By  : MIHx0 (Mizaz Haider)                                           ║
 ║   Powered By: The PenTrix                                                    ║
 ║                                                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 
-SubHunter v4.0 - Pro Edition
+SubHunter v5.0 - Pro Edition
 Features:
 - 6 Passive Sources (crt.sh, HackerTarget, AlienVault, urlscan.io, RapidDNS, WebArchive)
 - 🧠 Wildcard DNS Detection & Filtering
@@ -36,6 +36,7 @@ License: MIT
 import argparse
 import asyncio
 import json
+import re
 import sys
 import warnings
 from datetime import datetime
@@ -121,7 +122,7 @@ async def hunt(
     vhost: bool = False,
     js_parse: bool = False
 ):
-    """Main hunting function with v4.0 pro features."""
+    """Main hunting function with v5.0 pro features."""
     
     all_subdomains = set()
     dns_results = {}
@@ -316,9 +317,9 @@ async def hunt(
             port_results, 
             screenshot_results, 
             str(html_path),
-            takeover_results=takeover_results if 'takeover_results' in locals() else [],
-            vhost_results=vhost_results if 'vhost_results' in locals() else [],
-            js_results=js_results if 'js_results' in locals() else {}
+            takeover_results=takeover_results,
+            vhost_results=vhost_results,
+            js_results=js_results
         )
         if not quiet:
             print(f"\n{Colors.GREEN}[+] HTML report saved to: {html_path}{Colors.RESET}")
@@ -331,9 +332,9 @@ async def hunt(
                 port_results, 
                 screenshot_results, 
                 html_report,
-                takeover_results=takeover_results if 'takeover_results' in locals() else [],
-                vhost_results=vhost_results if 'vhost_results' in locals() else [],
-                js_results=js_results if 'js_results' in locals() else {}
+                takeover_results=takeover_results,
+                vhost_results=vhost_results,
+                js_results=js_results
             )
             if not quiet:
                 print(f"{Colors.GREEN}[+] HTML report also saved to: {html_report}{Colors.RESET}")
@@ -418,6 +419,14 @@ Examples:
     parser.add_argument("-c", "--concurrency", type=int, default=100, help="Concurrency (default: 100)")
     parser.add_argument("-q", "--quiet", action="store_true", help="Quiet mode")
     
+    # v4.0 Features
+    parser.add_argument("--recursive", action="store_true",
+                       help="Enable recursive sub-subdomain discovery")
+    parser.add_argument("--recursive-depth", type=int, default=2,
+                       help="Max recursion depth (default: 2)")
+    parser.add_argument("--no-wildcard-filter", action="store_true",
+                       help="Disable wildcard DNS filtering")
+    
     # v5.0 New Features
     parser.add_argument("--takeover", action="store_true", 
                        help="Check for subdomain takeover vulnerabilities")
@@ -428,40 +437,42 @@ Examples:
     parser.add_argument("--interactive", action="store_true", 
                        help="Force interactive mode")
 
+    # Helper class to mimic argparse Namespace from dict
+    class ConfigArgs:
+        def __init__(self, **entries):
+            self.__dict__.update(entries)
+
     # Check if no args provided -> Interactive Mode
     if len(sys.argv) == 1:
         from utils.menu import interactive_menu
         try:
             config = interactive_menu()
-            # Map config dict to namespace-like object or just use as kwargs
-            # Create a simple class to mimic argparse Namespace
-            class ConfigArgs:
-                def __init__(self, **entries):
-                    self.__dict__.update(entries)
-            
             args = ConfigArgs(**config)
-            
-        except ImportError:
-            # Fallback if menu module fails
+        except (ImportError, Exception):
             print(f"{Colors.YELLOW}[!] Interactive mode error. Use --help{Colors.RESET}")
             sys.exit(1)
     else:
         args = parser.parse_args()
         
-        # Helper to handle interactive flag if passed explicitly
+        # Handle interactive flag if passed explicitly
         if getattr(args, 'interactive', False):
             from utils.menu import interactive_menu
             config = interactive_menu()
-            class ConfigArgs:
-                def __init__(self, **entries):
-                    self.__dict__.update(entries)
             args = ConfigArgs(**config)
 
-    # Clean domain
+    # Clean and validate domain
     domain = args.domain.lower().strip()
     if domain.startswith(("http://", "https://")):
         domain = urlparse(domain).netloc
     domain = domain.rstrip("/")
+    
+    # Validate domain format
+    domain_pattern = re.compile(
+        r'^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+    )
+    if not domain_pattern.match(domain):
+        print(f"{Colors.RED}[!] Invalid domain format: {domain}{Colors.RESET}")
+        sys.exit(1)
     
     if not getattr(args, 'quiet', False):
         print_banner()

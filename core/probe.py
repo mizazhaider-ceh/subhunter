@@ -1,5 +1,5 @@
 """
-HTTP probing and technology detection - SubHunter v4.0
+HTTP probing and technology detection - SubHunter v5.0
 
 Enhanced with:
 - Cloud provider detection
@@ -20,10 +20,10 @@ from core.cloud import detect_cloud_provider, get_cloud_color
 async def resolve_ip(subdomain: str) -> str:
     """Resolve subdomain to IP address."""
     try:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         result = await loop.run_in_executor(None, socket.gethostbyname, subdomain)
         return result
-    except:
+    except Exception:
         return ""
 
 
@@ -144,7 +144,7 @@ async def probe_http(
                 )
                 
                 return result
-        except:
+        except Exception:
             continue
     
     # Even if not alive, try to detect cloud from CNAME/IP

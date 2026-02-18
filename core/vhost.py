@@ -1,4 +1,7 @@
+"""Virtual Host Discovery Module - SubHunter v5.0
 
+Discovers hidden virtual hosts by fuzzing Host headers against known IPs.
+"""
 import asyncio
 import httpx
 from typing import List, Dict, Set
@@ -52,7 +55,7 @@ async def discover_vhosts(
             try:
                 base_resp = await client.get(f"http://{ip}")
                 base_len = len(base_resp.content)
-            except:
+            except Exception:
                 continue
                 
             # Fuzz with known subdomains + common variations
@@ -86,7 +89,7 @@ async def discover_vhosts(
                         })
                         if not quiet:
                             print(f"  {Colors.GREEN}[+] Possible VHost: {host} on {ip} (Status: {resp.status_code}){Colors.RESET}")
-                except:
+                except Exception:
                     pass
     
     return vhosts_found

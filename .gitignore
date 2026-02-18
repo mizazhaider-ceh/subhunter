@@ -6,23 +6,34 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.egg
 
 # Virtual environments
 .env
 .venv
 env/
 venv/
+ENV/
 
 # IDE
 .idea/
 .vscode/
 *.swp
+*.swo
+*~
 
-# Output
-*.txt
-*.json
-!requirements.txt
+# SubHunter output & state
+reports/*.html
+reports/*.json
+screenshots/
+*.screenshots/
+.subhunter_state.json
 
 # OS
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+.pytest_cache/

@@ -1,5 +1,5 @@
 """
-Passive subdomain enumeration sources
+Passive subdomain enumeration sources - SubHunter v5.0
 """
 import asyncio
 import re
@@ -23,7 +23,7 @@ async def fetch_crtsh(domain: str) -> Set[str]:
                         sub = sub.strip().lower()
                         if sub.endswith(domain) and "*" not in sub:
                             subdomains.add(sub)
-    except:
+    except Exception:
         pass
     return subdomains
 
@@ -41,7 +41,7 @@ async def fetch_hackertarget(domain: str) -> Set[str]:
                         sub = line.split(",")[0].strip().lower()
                         if sub.endswith(domain):
                             subdomains.add(sub)
-    except:
+    except Exception:
         pass
     return subdomains
 
@@ -59,7 +59,7 @@ async def fetch_alienvault(domain: str) -> Set[str]:
                     hostname = entry.get("hostname", "").strip().lower()
                     if hostname.endswith(domain):
                         subdomains.add(hostname)
-    except:
+    except Exception:
         pass
     return subdomains
 
@@ -78,7 +78,7 @@ async def fetch_urlscan(domain: str) -> Set[str]:
                     sub = page.get("domain", "").strip().lower()
                     if sub.endswith(domain):
                         subdomains.add(sub)
-    except:
+    except Exception:
         pass
     return subdomains
 
@@ -97,7 +97,7 @@ async def fetch_rapiddns(domain: str) -> Set[str]:
                     sub = match.lower()
                     if sub.endswith(domain):
                         subdomains.add(sub)
-    except:
+    except Exception:
         pass
     return subdomains
 
@@ -115,9 +115,9 @@ async def fetch_webarchive(domain: str) -> Set[str]:
                         parsed = urlparse(line)
                         if parsed.netloc.endswith(domain):
                             subdomains.add(parsed.netloc.lower())
-                    except:
+                    except Exception:
                         pass
-    except:
+    except Exception:
         pass
     return subdomains
 

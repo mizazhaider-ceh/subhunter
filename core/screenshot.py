@@ -75,10 +75,10 @@ def take_screenshot_selenium(url: str, output_path: Path) -> Optional[str]:
             driver.save_screenshot(str(output_path))
             driver.quit()
             return str(output_path)
-        except:
+        except Exception:
             driver.quit()
             return None
-    except:
+    except Exception:
         return None
 
 
@@ -97,7 +97,7 @@ async def take_screenshot(url: str, output_dir: Path, timeout: int = 15000) -> O
         result = await take_screenshot_playwright(url, filepath, timeout)
     elif SCREENSHOT_METHOD == "selenium":
         # Run in executor since selenium is sync
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         result = await loop.run_in_executor(None, take_screenshot_selenium, url, filepath)
     
     if result:
@@ -110,7 +110,7 @@ async def take_screenshot(url: str, output_dir: Path, timeout: int = 15000) -> O
                 "path": result,
                 "base64": b64
             }
-        except:
+        except Exception:
             return {"url": url, "path": result, "base64": None}
     
     return None

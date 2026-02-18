@@ -1,5 +1,10 @@
+"""Subdomain Takeover Detection Module - SubHunter v5.0
 
+Checks for subdomain takeover vulnerabilities by analyzing CNAME records
+and matching against known vulnerable service fingerprints.
+"""
 import aiodns
+import httpx
 from typing import List, Dict, Set
 from utils.display import Colors
 
@@ -84,7 +89,6 @@ async def check_takeover(domain: str, subdomains: List[str], resolver: aiodns.DN
         
     verified = []
     
-    import httpx
     async with httpx.AsyncClient(verify=False, timeout=5) as client:
         for candidate in results:
             try:
@@ -104,7 +108,7 @@ async def check_takeover(domain: str, subdomains: List[str], resolver: aiodns.DN
                     verified.append(candidate)
                     if not quiet:
                          print(f"  {Colors.RED}[!] VULNERABLE: {candidate['subdomain']} -> {candidate['service']}{Colors.RESET}")
-            except:
+            except Exception:
                 pass
 
     return verified
