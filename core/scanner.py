@@ -1,5 +1,5 @@
 """
-Port scanning module
+Port scanning module - SubHunter v5.0
 """
 import asyncio
 import socket
@@ -16,7 +16,7 @@ async def port_scan(host: str, port: int, timeout: float = 1.0) -> bool:
         writer.close()
         await writer.wait_closed()
         return True
-    except:
+    except Exception:
         return False
 
 

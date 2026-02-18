@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="600" viewBox="0 0 850 600">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      .report-bg { fill: #0a0a1a; }
+      .card-bg { fill: #111827; }
+      .card-border { stroke: #1e293b; stroke-width: 1; fill: none; }
+      .header-bg { fill: linear-gradient(135deg, #00ff88, #00ccff); }
+      .text-white { fill: #f0f6fc; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-gray { fill: #6b7280; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-green { fill: #00ff88; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-cyan { fill: #00ccff; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-red { fill: #ff4757; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-yellow { fill: #ffd93d; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-orange { fill: #ffa657; font-family: 'Inter', -apple-system, sans-serif; }
+      .text-blue { fill: #58a6ff; font-family: 'Inter', -apple-system, sans-serif; }
+      .bar-green { fill: #00ff88; opacity: 0.85; }
+      .bar-red { fill: #ff4757; opacity: 0.85; }
+      .bar-yellow { fill: #ffd93d; opacity: 0.85; }
+      .bar-blue { fill: #58a6ff; opacity: 0.85; }
+      .bar-bg { fill: #1e293b; }
+      .table-header { fill: #1a1a2e; }
+      .table-row-even { fill: #111827; }
+      .table-row-odd { fill: #0f172a; }
+      .table-border { stroke: #1e293b; stroke-width: 0.5; }
+      .badge { rx: 4; ry: 4; }
+      .gradient-line { fill: url(#grad1); }
+    </style>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ccff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect class="report-bg" width="850" height="600" rx="8"/>
+
+  <!-- Top Header Bar -->
+  <rect fill="url(#headerGrad)" x="0" y="0" width="850" height="80" rx="8"/>
+  <rect class="report-bg" x="0" y="70" width="850" height="12"/>
+
+  <!-- Header Content -->
+  <text class="text-green" x="30" y="30" font-size="11" font-weight="600" letter-spacing="3">SUBHUNTER v5.0 PRO</text>
+  <rect fill="url(#grad1)" x="30" y="38" width="150" height="2"/>
+  <text class="text-white" x="30" y="60" font-size="20" font-weight="700">hackthebox.com</text>
+  <text class="text-gray" x="280" y="60" font-size="12">Scan Report · Feb 18, 2026 · Duration: 2m 34s</text>
+
+  <!-- Stats Cards Row -->
+  <!-- Card 1: Total Subdomains -->
+  <rect class="card-bg" x="30" y="95" width="185" height="80" rx="8"/>
+  <rect class="card-border" x="30" y="95" width="185" height="80" rx="8"/>
+  <text class="text-gray" x="50" y="118" font-size="11" font-weight="600">TOTAL SUBDOMAINS</text>
+  <text class="text-cyan" x="50" y="155" font-size="32" font-weight="700">265</text>
+
+  <!-- Card 2: Alive Hosts -->
+  <rect class="card-bg" x="230" y="95" width="185" height="80" rx="8"/>
+  <rect class="card-border" x="230" y="95" width="185" height="80" rx="8"/>
+  <text class="text-gray" x="250" y="118" font-size="11" font-weight="600">ALIVE HOSTS</text>
+  <text class="text-green" x="250" y="155" font-size="32" font-weight="700">188</text>
+  <text class="text-gray" x="330" y="155" font-size="14"> / 265</text>
+
+  <!-- Card 3: Takeover Risk -->
+  <rect class="card-bg" x="430" y="95" width="185" height="80" rx="8"/>
+  <rect class="card-border" x="430" y="95" width="185" height="80" rx="8"/>
+  <text class="text-gray" x="450" y="118" font-size="11" font-weight="600">TAKEOVER RISKS</text>
+  <text class="text-red" x="450" y="155" font-size="32" font-weight="700">1</text>
+  <text class="text-red" x="480" y="155" font-size="14"> VULNERABLE</text>
+
+  <!-- Card 4: Cloud Providers -->
+  <rect class="card-bg" x="630" y="95" width="185" height="80" rx="8"/>
+  <rect class="card-border" x="630" y="95" width="185" height="80" rx="8"/>
+  <text class="text-gray" x="650" y="118" font-size="11" font-weight="600">CLOUD PROVIDERS</text>
+  <text class="text-orange" x="650" y="155" font-size="32" font-weight="700">4</text>
+  <text class="text-gray" x="685" y="155" font-size="14"> detected</text>
+
+  <!-- Cloud Distribution Bar Chart -->
+  <rect class="card-bg" x="30" y="195" width="390" height="180" rx="8"/>
+  <rect class="card-border" x="30" y="195" width="390" height="180" rx="8"/>
+  <text class="text-white" x="50" y="222" font-size="13" font-weight="600">Cloud Provider Distribution</text>
+
+  <!-- Bar: Cloudflare -->
+  <text class="text-gray" x="50" y="252" font-size="11">Cloudflare</text>
+  <rect class="bar-bg" x="135" y="240" width="250" height="16" rx="3"/>
+  <rect class="bar-yellow" x="135" y="240" width="212" height="16" rx="3"/>
+  <text class="text-white" x="355" y="252" font-size="11">142</text>
+
+  <!-- Bar: AWS -->
+  <text class="text-gray" x="50" y="278" font-size="11">AWS</text>
+  <rect class="bar-bg" x="135" y="266" width="250" height="16" rx="3"/>
+  <rect class="bar-green" x="135" y="266" width="46" height="16" rx="3"/>
+  <text class="text-white" x="189" y="278" font-size="11">31</text>
+
+  <!-- Bar: Azure -->
+  <text class="text-gray" x="50" y="304" font-size="11">Azure</text>
+  <rect class="bar-bg" x="135" y="292" width="250" height="16" rx="3"/>
+  <rect class="bar-blue" x="135" y="292" width="12" height="16" rx="3"/>
+  <text class="text-white" x="155" y="304" font-size="11">8</text>
+
+  <!-- Bar: Heroku -->
+  <text class="text-gray" x="50" y="330" font-size="11">Heroku</text>
+  <rect class="bar-bg" x="135" y="318" width="250" height="16" rx="3"/>
+  <rect fill="#bc8cff" opacity="0.85" x="135" y="318" width="10" height="16" rx="3"/>
+  <text class="text-white" x="153" y="330" font-size="11">7</text>
+
+  <!-- Status Code Distribution -->
+  <rect class="card-bg" x="435" y="195" width="385" height="180" rx="8"/>
+  <rect class="card-border" x="435" y="195" width="385" height="180" rx="8"/>
+  <text class="text-white" x="455" y="222" font-size="13" font-weight="600">HTTP Status Codes</text>
+
+  <!-- Status Circles -->
+  <circle fill="#00ff88" cx="480" cy="290" r="40"/>
+  <text fill="#0a0a1a" x="480" y="287" font-size="18" font-weight="700" text-anchor="middle" font-family="Inter, sans-serif">149</text>
+  <text fill="#0a0a1a" x="480" y="303" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">2xx</text>
+
+  <circle fill="#ffd93d" cx="580" cy="290" r="30"/>
+  <text fill="#0a0a1a" x="580" y="287" font-size="16" font-weight="700" text-anchor="middle" font-family="Inter, sans-serif">24</text>
+  <text fill="#0a0a1a" x="580" y="302" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">3xx</text>
+
+  <circle fill="#ff4757" cx="660" cy="295" r="22"/>
+  <text fill="#0a0a1a" x="660" y="293" font-size="14" font-weight="700" text-anchor="middle" font-family="Inter, sans-serif">12</text>
+  <text fill="#0a0a1a" x="660" y="306" font-size="8" text-anchor="middle" font-family="Inter, sans-serif">4xx</text>
+
+  <circle fill="#6b7280" cx="720" cy="298" r="16"/>
+  <text fill="#f0f6fc" x="720" y="296" font-size="12" font-weight="700" text-anchor="middle" font-family="Inter, sans-serif">3</text>
+  <text fill="#f0f6fc" x="720" y="308" font-size="8" text-anchor="middle" font-family="Inter, sans-serif">5xx</text>
+
+  <!-- Subdomain Table Preview -->
+  <rect class="card-bg" x="30" y="395" width="790" height="185" rx="8"/>
+  <rect class="card-border" x="30" y="395" width="790" height="185" rx="8"/>
+  <text class="text-white" x="50" y="420" font-size="13" font-weight="600">Discovered Subdomains</text>
+  <text class="text-gray" x="680" y="420" font-size="11">Showing 5 of 188</text>
+
+  <!-- Table Header -->
+  <rect class="table-header" x="45" y="432" width="760" height="24" rx="4"/>
+  <text class="text-gray" x="60" y="448" font-size="10" font-weight="600">SUBDOMAIN</text>
+  <text class="text-gray" x="290" y="448" font-size="10" font-weight="600">IP ADDRESS</text>
+  <text class="text-gray" x="420" y="448" font-size="10" font-weight="600">STATUS</text>
+  <text class="text-gray" x="500" y="448" font-size="10" font-weight="600">TECH</text>
+  <text class="text-gray" x="600" y="448" font-size="10" font-weight="600">CLOUD</text>
+  <text class="text-gray" x="700" y="448" font-size="10" font-weight="600">PORTS</text>
+
+  <!-- Table Rows -->
+  <rect class="table-row-odd" x="45" y="458" width="760" height="22"/>
+  <text class="text-cyan" x="60" y="473" font-size="10">www.hackthebox.com</text>
+  <text class="text-gray" x="290" y="473" font-size="10">104.18.12.34</text>
+  <rect fill="#00ff88" x="420" y="463" width="32" height="14" rx="3"/><text fill="#0a0a1a" x="427" y="473" font-size="9" font-weight="600">200</text>
+  <text class="text-blue" x="500" y="473" font-size="10">React, Nginx</text>
+  <text class="text-orange" x="600" y="473" font-size="10">Cloudflare</text>
+  <text class="text-gray" x="700" y="473" font-size="10">80, 443</text>
+
+  <rect class="table-row-even" x="45" y="480" width="760" height="22"/>
+  <text class="text-cyan" x="60" y="495" font-size="10">app.hackthebox.com</text>
+  <text class="text-gray" x="290" y="495" font-size="10">104.18.15.67</text>
+  <rect fill="#00ff88" x="420" y="485" width="32" height="14" rx="3"/><text fill="#0a0a1a" x="427" y="495" font-size="9" font-weight="600">200</text>
+  <text class="text-blue" x="500" y="495" font-size="10">Node.js</text>
+  <text class="text-orange" x="600" y="495" font-size="10">Cloudflare</text>
+  <text class="text-gray" x="700" y="495" font-size="10">80, 443</text>
+
+  <rect class="table-row-odd" x="45" y="502" width="760" height="22"/>
+  <text class="text-cyan" x="60" y="517" font-size="10">api.hackthebox.com</text>
+  <text class="text-gray" x="290" y="517" font-size="10">104.18.15.68</text>
+  <rect fill="#00ff88" x="420" y="507" width="32" height="14" rx="3"/><text fill="#0a0a1a" x="427" y="517" font-size="9" font-weight="600">200</text>
+  <text class="text-blue" x="500" y="517" font-size="10">Nginx</text>
+  <text class="text-orange" x="600" y="517" font-size="10">Cloudflare</text>
+  <text class="text-gray" x="700" y="517" font-size="10">80, 443, 8080</text>
+
+  <rect class="table-row-even" x="45" y="524" width="760" height="22"/>
+  <text class="text-cyan" x="60" y="539" font-size="10">staging.hackthebox.com</text>
+  <text class="text-gray" x="290" y="539" font-size="10">52.18.99.12</text>
+  <rect fill="#ff4757" x="420" y="529" width="32" height="14" rx="3"/><text fill="#f0f6fc" x="427" y="539" font-size="9" font-weight="600">403</text>
+  <text class="text-blue" x="500" y="539" font-size="10">Nginx</text>
+  <text class="text-green" x="600" y="539" font-size="10">AWS</text>
+  <text class="text-gray" x="700" y="539" font-size="10">80, 443, 22</text>
+
+  <rect class="table-row-odd" x="45" y="546" width="760" height="22"/>
+  <text class="text-cyan" x="60" y="561" font-size="10">old-blog.hackthebox.com</text>
+  <text class="text-gray" x="290" y="561" font-size="10">—</text>
+  <rect fill="#ff4757" x="420" y="551" width="58" height="14" rx="3"/><text fill="#f0f6fc" x="424" y="561" font-size="9" font-weight="600">TAKEOVER</text>
+  <text class="text-gray" x="500" y="561" font-size="10">—</text>
+  <text fill="#bc8cff" x="600" y="561" font-size="10" font-family="Inter, sans-serif">Heroku</text>
+  <text class="text-gray" x="700" y="561" font-size="10">—</text>
+</svg>

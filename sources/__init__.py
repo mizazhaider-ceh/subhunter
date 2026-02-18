@@ -1,4 +1,4 @@
-"""SubHunter v3.0 - Sources Module (Passive Enumeration)"""
+"""SubHunter v5.0 - Sources Module (Passive Enumeration)"""
 from .passive import (
     fetch_crtsh,
     fetch_hackertarget,

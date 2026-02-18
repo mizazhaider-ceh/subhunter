@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="520" viewBox="0 0 850 520">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap');
+      .term-bg { fill: #0d1117; }
+      .title-bar { fill: #161b22; }
+      .dot-red { fill: #ff5f56; }
+      .dot-yellow { fill: #ffbd2e; }
+      .dot-green { fill: #27c93f; }
+      .title-text { fill: #8b949e; font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 12px; }
+      .text { fill: #c9d1d9; font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 13px; }
+      .cyan { fill: #00ffcc; }
+      .green { fill: #3fb950; }
+      .yellow { fill: #d29922; }
+      .magenta { fill: #bc8cff; }
+      .bold { font-weight: 700; }
+      .dim { fill: #484f58; }
+      .white { fill: #f0f6fc; }
+      .blue { fill: #58a6ff; }
+      .red { fill: #ff7b72; }
+      .orange { fill: #ffa657; }
+    </style>
+  </defs>
+
+  <!-- Terminal Window -->
+  <rect class="term-bg" width="850" height="520" rx="10" ry="10"/>
+  <rect class="title-bar" width="850" height="38" rx="10" ry="10"/>
+  <rect class="term-bg" x="0" y="28" width="850" height="12"/>
+
+  <!-- Window Dots -->
+  <circle class="dot-red" cx="20" cy="19" r="6"/>
+  <circle class="dot-yellow" cx="40" cy="19" r="6"/>
+  <circle class="dot-green" cx="60" cy="19" r="6"/>
+  <text class="title-text" x="380" y="23" text-anchor="middle">subhunter.py — Interactive Mode</text>
+
+  <!-- Banner -->
+  <text class="cyan bold" x="30" y="68" xml:space="preserve">  ╔═╗╦ ╦╔╗ ╦ ╦╦ ╦╔╗╔╔╦╗╔═╗╦═╗</text>
+  <text class="cyan bold" x="30" y="86" xml:space="preserve">  ╚═╗║ ║╠╩╗╠═╣║ ║║║║ ║ ║╣ ╠╦╝</text>
+  <text class="cyan bold" x="30" y="104" xml:space="preserve">  ╚═╝╚═╝╚═╝╩ ╩╚═╝╝╚╝ ╩ ╚═╝╩╚═</text>
+  <text class="green bold" x="370" y="104" xml:space="preserve">v5.0 PRO</text>
+
+  <text class="dim" x="30" y="128" xml:space="preserve">  Advanced Subdomain Enumeration &amp; Security Recon Framework</text>
+  <text class="dim" x="30" y="146" xml:space="preserve">  by MIHx0 · Powered by The PenTrix</text>
+
+  <!-- Separator -->
+  <text class="dim" x="30" y="170" xml:space="preserve">  ═══════════════════════════════════════════════════════════════</text>
+
+  <!-- Menu Title -->
+  <text class="green bold" x="30" y="196" xml:space="preserve">  🎯  INTERACTIVE SCAN CONFIGURATION</text>
+  <text class="dim" x="30" y="214" xml:space="preserve">  ─────────────────────────────────────</text>
+
+  <!-- Menu Items -->
+  <text class="white" x="30" y="240" xml:space="preserve">  Enter target domain: </text>
+  <text class="cyan bold" x="250" y="240" xml:space="preserve">hackthebox.com</text>
+
+  <text class="dim" x="30" y="268" xml:space="preserve">  ┌─ Scan Options ─────────────────────────────────────────┐</text>
+  <text class="text" x="30" y="290" xml:space="preserve">  │  [1] 🔍 Passive Enumeration Only         </text><text class="green" x="515" y="290" xml:space="preserve">  ✓ ON  │</text>
+  <text class="text" x="30" y="312" xml:space="preserve">  │  [2] 📡 DNS Brute-forcing                </text><text class="green" x="515" y="312" xml:space="preserve">  ✓ ON  │</text>
+  <text class="text" x="30" y="334" xml:space="preserve">  │  [3] 🔄 Recursive Discovery              </text><text class="green" x="515" y="334" xml:space="preserve">  ✓ ON  │</text>
+  <text class="text" x="30" y="356" xml:space="preserve">  │  [4] 🎯 Subdomain Takeover Check         </text><text class="green" x="515" y="356" xml:space="preserve">  ✓ ON  │</text>
+  <text class="text" x="30" y="378" xml:space="preserve">  │  [5] 🌐 VHost Discovery                  </text><text class="red" x="515" y="378" xml:space="preserve">  ✗ OFF │</text>
+  <text class="text" x="30" y="400" xml:space="preserve">  │  [6] 📜 JavaScript Analysis              </text><text class="green" x="515" y="400" xml:space="preserve">  ✓ ON  │</text>
+  <text class="text" x="30" y="422" xml:space="preserve">  │  [7] 📸 Screenshots                      </text><text class="red" x="515" y="422" xml:space="preserve">  ✗ OFF │</text>
+  <text class="text" x="30" y="444" xml:space="preserve">  │  [8] 🔐 Port Scanning                    </text><text class="green" x="515" y="444" xml:space="preserve">  ✓ ON  │</text>
+  <text class="dim" x="30" y="466" xml:space="preserve">  └────────────────────────────────────────────────────────┘</text>
+
+  <text class="yellow" x="30" y="496" xml:space="preserve">  ▶ Press ENTER to start scan, or type option number to toggle</text>
+</svg>
